@@ -11,7 +11,7 @@ from sys import exit
 pygame.init() 
 
 # Creates the play window
-screen = pygame.display.set_mode((800,400))
+screen = pygame.display.set_mode((1200,600))
 
 # sets the title for the game.
 pygame.display.set_caption("Ultimate Pygame")
@@ -19,7 +19,15 @@ pygame.display.set_caption("Ultimate Pygame")
 # sets the frame rate of the game.
 clock = pygame.time.Clock()
 
+# set game display name
+pygame.display.set_caption("Crossing the Deep")
+
 FPS = 60
+
+# images
+background_surf = pygame.image.load("images/stormy_background.png")
+
+
 
 while True:
 
@@ -29,6 +37,10 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit() # oposite of pygame.init()
             exit()
+
+
+    screen.blit(background_surf,(0,-150))
+    
 
 
     # updates pygame display.
