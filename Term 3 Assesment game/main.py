@@ -15,7 +15,7 @@ from sys import exit
 pygame.init() 
 
 # Creates the play window
-screen = pygame.display.set_mode((1200,600))
+screen = pygame.display.set_mode((1200,675))
 
 # sets the title for the game.
 pygame.display.set_caption("Ultimate Pygame")
