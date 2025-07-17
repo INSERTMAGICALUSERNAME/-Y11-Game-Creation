@@ -42,7 +42,7 @@ info_surf = pacific_font.render('Press Space to Start, Press esacpe to quit, Pre
 info_surf = pygame.transform.scale(info_surf,(1000,50))
 info_surf_rec = info_surf.get_rect(midbottom = (600, 500))
 
-game_active = False 
+game_state = 2 
 
 while True:
 
@@ -54,21 +54,38 @@ while True:
             exit()
 
         else:
+            
+            
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                game_active = True   
+                game_state = 1   
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_h:
+                game_state = 3
+                
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 exit()
+            
+            
+                
 
-    if game_active:
+    #main gameplay
+    if game_state == 1:
         screen.blit(background_surf,(0,-150))
     
     #title and game over screen
-    else:
+    if game_state == 2:
+
         screen.blit(background_surf,(0,-150))
-        pygame.draw.rect(screen,(64,64,64),(50,300,1100,300))
+        pygame.draw.rect(screen,"#673506FF",(50,300,1100,300))
+        pygame.draw.rect(screen,"#2C2C2CCC",(50,300,1100,300),10,2)
         screen.blit(info_surf,info_surf_rec)
         screen.blit(title_surf,title_rec)
+        
+    if game_state == 3:
+        screen.blit(background_surf,(0,-150))
+        pygame.draw.rect(screen,"#673506FF",(50,25,1100,625))
+        pygame.draw.rect(screen,"#2C2C2CCC",(50,25,1100,625),10,2)
+        
 
         
 
