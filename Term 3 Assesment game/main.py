@@ -67,6 +67,9 @@ screen = pygame.display.set_mode((1200,675))
 # sets the title for the game.
 pygame.display.set_caption("Ultimate Pygame")
 
+#creating font
+pacific_font = pygame.font.Font('Font/Pacifico-regular.ttf',50)
+
 # sets the frame rate of the game.
 clock = pygame.time.Clock()
 
@@ -80,12 +83,25 @@ FPS = 60
 player =  pygame.sprite.GroupSingle()
 player.add(Player())
 
+#text
+
+#title
+title_surf = pacific_font.render('Pacific Pursuit', True,"#006439")
+title_rec = title_surf.get_rect(center = (600,373))
+
+#blurb
+
+info_surf = pacific_font.render('Press Space to Start, Press esacpe to quit, Press "h" for how to play',True,('#006439'))
+info_surf = pygame.transform.scale(info_surf,(1000,50))
+info_surf_rec = info_surf.get_rect(midbottom = (600, 500))
+
+
+
 
 # images
 background_surf = pygame.image.load("images/background_frame_5(copy)(Medium).png").convert_alpha()
-# ship_surf = pygame.image.load("images/ship.png").convert_alpha()
-# ship_surf = pygame.transform.rotozoom(ship_surf,0,1.2)
-# ship_rect = ship_surf.get_rect(midbottom = (600,725))
+game_state = 2 
+
 
 while True:
 
@@ -95,15 +111,55 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit() # oposite of pygame.init()
             exit()
+            
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and game_state == 2:
+            game_state = 1   
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_h and game_state == 2:
+            game_state = 3
+                
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and game_state == 2:
+            pygame.quit()
+            exit()
+
+       
+            
+            
+            
+            
+            
+                
+
+    #main gameplay
+    if game_state == 1:
+        screen.blit(background_surf,(0,-150))
+        # updates pygame display.
+        player.draw(screen)
+        player.update()
+    
+    #title and game over screen
+    if game_state == 2:
+
+        screen.blit(background_surf,(0,-150))
+        pygame.draw.rect(screen,"#673506FF",(50,300,1100,300))
+        pygame.draw.rect(screen,"#2C2C2CCC",(50,300,1100,300),10,2)
+        screen.blit(info_surf,info_surf_rec)
+        screen.blit(title_surf,title_rec)
+        
+    if game_state == 3:
+        screen.blit(background_surf,(0,-150))
+        pygame.draw.rect(screen,"#673506FF",(50,25,1100,625))
+        pygame.draw.rect(screen,"#2C2C2CCC",(50,25,1100,625),10,2)
+        
+
+        
 
 
-    screen.blit(background_surf,(0,0))
-    # screen.blit(ship_surf, ship_rect)
 
 
-    # updates pygame display.
-    player.draw(screen)
-    player.update()
+
+            
+
+   
     pygame.display.update()
     
     # While loop can only run at FPS speed per second. 
