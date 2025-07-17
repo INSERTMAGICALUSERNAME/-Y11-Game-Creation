@@ -111,15 +111,18 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit() # oposite of pygame.init()
             exit()
-            
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and game_state == 2:
-            game_state = 1   
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_h and game_state == 2:
-            game_state = 3
-                
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and game_state == 2:
-            pygame.quit()
-            exit()
+        
+
+        if game_state == 2:
+
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                game_state = 1   
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_h:
+                game_state = 3
+                    
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                exit()
 
        
             
