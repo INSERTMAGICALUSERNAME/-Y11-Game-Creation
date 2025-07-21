@@ -7,8 +7,9 @@
 import pygame
 from sys import exit
 
-
+# player class
 class Player (pygame.sprite.Sprite):
+    # inicailizes the class and sets thing like image, rect and gravity
     def __init__(self):
         super().__init__()
         self.player_image = pygame.image.load("images/player_green.png").convert_alpha()
@@ -18,7 +19,7 @@ class Player (pygame.sprite.Sprite):
 
 
         self.gravity = 0 
-
+        # sets up gravity for jumping
     def apply_gravity(self):
         self.gravity += 1
         self.rect.y += self.gravity
@@ -30,27 +31,31 @@ class Player (pygame.sprite.Sprite):
             self.rect.x = 1130
 
     
-    
+        # player movment
     def player_imput(self):
+        # get keys pressed
         keys = pygame.key.get_pressed()
+        # jump
         if keys[pygame.K_SPACE] or keys[pygame.K_w] or keys[pygame.K_UP]:
             if self.rect.y >= 400:
                 self.gravity = -20
 
 
-
+        # moving right
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             if self.rect.y == 400:
                 self.rect.x += 5
+            # if the player is jumping they go faster
             else:
                 self.rect.x += 8
-
+        # moving left
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             if self.rect.y == 400:
                 self.rect.x -= 5
+            # if the player is jumping they go faster
             else:
                 self.rect.x -= 8
-
+    # calls of the defs for the class
     def update(self):
         self.apply_gravity()
         self.player_imput()
@@ -111,15 +116,12 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit() # oposite of pygame.init()
             exit()
-        
-
         if game_state == 2:
-
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 game_state = 1   
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_h:
-                game_state = 3
-                    
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_h :
+             game_state = 3
+                
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 exit()
