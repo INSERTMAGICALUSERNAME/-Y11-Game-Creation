@@ -69,6 +69,7 @@ pygame.display.set_caption("Ultimate Pygame")
 
 #creating font
 pacific_font = pygame.font.Font('Font/Pacifico-regular.ttf',50)
+pixel_font = pygame.font.Font('Font/Pixeltype.ttf',50)
 
 # sets the frame rate of the game.
 clock = pygame.time.Clock()
@@ -86,12 +87,19 @@ player.add(Player())
 #text
 
 #title
-title_surf = pacific_font.render('Pacific Pursuit', True,"#006439")
+title_surf = pixel_font.render('Pacific Pursuit', True,"#006439")
 title_rec = title_surf.get_rect(center = (600,373))
+
+plank_surf = pygame.image.load("images/Wooden_plank.png").convert_alpha()
+plank_rect = plank_surf.get_rect(center = (600, 337))
+
+hanging_sign = pygame.image.load("images/Hanging_Sign-removebg-preview.png").convert_alpha()
+hanging_sign = pygame.transform.scale(hanging_sign,(500,700))
+hanging_sign_rec = hanging_sign.get_rect(center = (600, 300))
 
 #blurb
 
-info_surf = pacific_font.render('Press Space to Start, Press esacpe to quit, Press "h" for how to play',True,('#006439'))
+info_surf = pixel_font.render('Press Space to Start, Press esacpe to quit, Press "h" for how to play',True,('#006439'))
 info_surf = pygame.transform.scale(info_surf,(1000,50))
 info_surf_rec = info_surf.get_rect(midbottom = (600, 500))
 
@@ -99,7 +107,7 @@ info_surf_rec = info_surf.get_rect(midbottom = (600, 500))
 
 
 # images
-background_surf = pygame.image.load("images/background_frame_5(copy)(Medium).png").convert_alpha()
+background_surf = pygame.image.load("images/stormy_background.png").convert_alpha()
 game_state = 2 
 
 
@@ -111,15 +119,19 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit() # oposite of pygame.init()
             exit()
-            
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and game_state == 2:
-            game_state = 1   
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_h and game_state == 2:
-            game_state = 3
+        if game_state == 2:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                game_state = 1   
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_h :
+             game_state = 3
                 
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and game_state == 2:
-            pygame.quit()
-            exit()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                exit()
+        if game_state == 3:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                game_state = 2
+
 
        
             
@@ -140,8 +152,13 @@ while True:
     if game_state == 2:
 
         screen.blit(background_surf,(0,-150))
-        pygame.draw.rect(screen,"#673506FF",(50,300,1100,300))
-        pygame.draw.rect(screen,"#2C2C2CCC",(50,300,1100,300),10,2)
+        pygame.draw.rect(screen,"#C59568FF",(300,20,600,575))
+        pygame.draw.rect(screen,"#3C2005FF",(300,20,600,575),10)
+        screen.blit(hanging_sign,hanging_sign_rec)
+        # screen.blit(plank_surf,plank_rect)
+        # screen.blit(plank_surf,(plank_rect.x,plank_rect.y + 100))
+        # screen.blit(plank_surf,(plank_rect.x,plank_rect.y - 100))
+        
         screen.blit(info_surf,info_surf_rec)
         screen.blit(title_surf,title_rec)
         
