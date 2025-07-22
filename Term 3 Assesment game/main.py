@@ -13,6 +13,7 @@ class Player (pygame.sprite.Sprite):
     # inicailizes the class and sets thing like image, rect and gravity
     def __init__(self):
         super().__init__()
+        
         self.player_image = pygame.image.load("images/player_green.png").convert_alpha()
 
         self.image = self.player_image
@@ -60,55 +61,79 @@ class Player (pygame.sprite.Sprite):
     def update(self):
         self.apply_gravity()
         self.player_imput()
+        global player_x_pos
+        player_x_pos = self.rect.x
+        
+        
 
 
 
 class Breakage(pygame.sprite.Sprite):
     def __init__(self, type):
         super().__init__()
+        self.type = type
 
         breakage_image = pygame.image.load("images/breakage.png").convert_alpha()
         self.image = breakage_image
         
-        
+        # If type is sail, bow, floor_board or rope it sets the y and x position of the breakage
+        # and generates 3 random numbers between 0 and 9 for the passcode.
         if type == 'sail':
             self.y_pos = 301
             self.x_pos = 600
-            self.rect = self.image.get_rect(midtop = (self.x_pos, self.y_pos))
+            self.sail_pass_1 = random.randint(0,9)
+            self.sail_pass_2 = random.randint(0,9)
+            self.sail_pass_3 = random.randint(0,9)
+                
+
         elif type == 'bow':
             self.y_pos = 499
             self.x_pos = 1050
-            self.rect = self.image.get_rect(midtop = (self.x_pos, self.y_pos))
+            self.bow_pass_1 = random.randint(0,9)
+            self.bow_pass_2 = random.randint(0,9)
+            self.bow_pass_3 = random.randint(0,9)
+                
+
         elif type == 'floor_board':
             self.y_pos = 499
             self.x_pos = 400
-            self.rect = self.image.get_rect(midtop = (self.x_pos, self.y_pos))
+            self.floor_board_pass_1 = random.randint(0,9)
+            self.floor_board_pass_2 = random.randint(0,9)
+            self.floor_board_pass_3 = random.randint(0,9)
+                
+
         elif type == 'rope':
             self.y_pos = 499
             self.x_pos = 800
-            self.rect = self.image.get_rect(midtop = (self.x_pos, self.y_pos))
-
-
-        
-        for self.breakage in breakage:
-            self.pass_1 = random.randint(0,9)
-            self.pass_2 = random.randint(0,9)
-            self.pass_3 = random.randint(0,9)
-
-    def breakage_print(self):
-        if breakage:
-            for self.rect in breakage:
-                if player.colliderect(breakage.rect):
-                    print(self.pass_1, self.pass_2, self.pass_3)
-
-    def update(self):
-        self.breakage_print(self)
-                    
-        
-
+            self.rope_pass_1 = random.randint(0,9)
+            self.rope_pass_2 = random.randint(0,9)
+            self.rope_pass_3 = random.randint(0,9)
                 
-
         
+        self.rect = self.image.get_rect(midtop = (self.x_pos, self.y_pos))
+      
+
+    # this is used to get the passcode when the player collides with the breakage based on the type of breakage
+    def collition_passcode(self):
+        collided_breakage = pygame.sprite.spritecollide(player.sprite, breakage, False)
+        # b mean 'one Breakage object from the breakage group'
+        for b in collided_breakage:
+            if isinstance(b, Breakage):
+                
+                if b.type == 'sail':
+                    return [b.sail_pass_1, b.sail_pass_2, b.sail_pass_3]
+            
+                elif b.type == 'bow':
+                    return[b.bow_pass_1, b.bow_pass_2, b.bow_pass_3]
+                
+                elif b.type == 'floor_board':
+                    return [b.floor_board_pass_1, b.floor_board_pass_2, b.floor_board_pass_3]
+            
+                elif b.type == 'rope':
+                    return [b.rope_pass_1, b.rope_pass_2, b.rope_pass_3]
+                    
+
+
 
 # starts pygame
 pygame.init() 
@@ -121,6 +146,13 @@ pygame.display.set_caption("Ultimate Pygame")
 
 #creating font
 pacific_font = pygame.font.Font('Font/Pacifico-regular.ttf',50)
+
+# set up passcode variables
+passcode = []
+pass_digit_1 = 0
+pass_digit_2 = 0
+pass_digit_3 = 0
+
 
 # sets the frame rate of the game.
 clock = pygame.time.Clock()
@@ -138,8 +170,6 @@ player.add(Player())
 # breakage group
 breakage = pygame.sprite.Group()
 
-
-#text
 
 #title
 title_surf = pacific_font.render('Pacific Pursuit', True,"#006439")
@@ -175,7 +205,7 @@ while True:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 game_state = 1   
             if event.type == pygame.KEYDOWN and event.key == pygame.K_h :
-             game_state = 3
+                game_state = 3
                 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 pygame.quit()
@@ -202,16 +232,41 @@ while True:
     if game_state == 1:
         screen.blit(background_surf,(0,0))
         
-        
-
+       
         # updates pygame display.
-        breakage.update()
         # drawing the breakage
         breakage.draw(screen)
-        
+                
         # drawing the player
         player.draw(screen)
         player.update()
+
+        # getting the passcode from the breakage class
+        for b in breakage:
+            passcode = b.collition_passcode()
+            if passcode:
+                
+                pass_digit_1 = passcode[0]
+                pass_digit_2 = passcode[1]
+                pass_digit_3 = passcode[2]
+
+                font_colour = (255,0,0)
+                
+                # display the passcode digits
+                pass_digit_1_text = pacific_font.render(f"{pass_digit_1}", True, font_colour)
+                pass_digit_1_rect = pass_digit_1_text.get_rect(center = (500,500 ))
+
+                pass_digit_2_text = pacific_font.render(f"{pass_digit_2}", True, font_colour)
+                pass_digit_2_rect = pass_digit_2_text.get_rect(center = (600,500 ))
+
+                pass_digit_3_text = pacific_font.render(f"{pass_digit_3}", True, font_colour)
+                pass_digit_3_rect = pass_digit_3_text.get_rect(center = (700,500 ))
+
+                screen.blit(pass_digit_1_text, pass_digit_1_rect)
+                screen.blit(pass_digit_2_text, pass_digit_2_rect)
+                screen.blit(pass_digit_3_text, pass_digit_3_rect)
+            
+        
         
     
     #title and game over screen
@@ -229,19 +284,8 @@ while True:
         pygame.draw.rect(screen,"#2C2C2CCC",(50,25,1100,625),10,2)
         
 
-        
-
-
-
-
-
-            
-
    
     pygame.display.update()
     
     # While loop can only run at FPS speed per second. 
     clock.tick(FPS)
-
-
-
