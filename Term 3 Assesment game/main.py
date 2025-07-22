@@ -69,21 +69,44 @@ class Breakage(pygame.sprite.Sprite):
 
         breakage_image = pygame.image.load("images/breakage.png").convert_alpha()
         self.image = breakage_image
-        self.rect = self.image.get_rect(midbottom = (600, 400))
+        
         
         if type == 'sail':
-            self.y_pos = 400
+            self.y_pos = 301
             self.x_pos = 600
             self.rect = self.image.get_rect(midtop = (self.x_pos, self.y_pos))
-        elif type == 'hull':
-            self.y_pos = 400
-            self.x_pos = 200
+        elif type == 'bow':
+            self.y_pos = 499
+            self.x_pos = 1050
             self.rect = self.image.get_rect(midtop = (self.x_pos, self.y_pos))
-        else:
-            self.y_pos = 400
-            self.x_pos = 1000
+        elif type == 'floor_board':
+            self.y_pos = 499
+            self.x_pos = 400
+            self.rect = self.image.get_rect(midtop = (self.x_pos, self.y_pos))
+        elif type == 'rope':
+            self.y_pos = 499
+            self.x_pos = 800
             self.rect = self.image.get_rect(midtop = (self.x_pos, self.y_pos))
 
+
+        
+        for self.breakage in breakage:
+            self.pass_1 = random.randint(0,9)
+            self.pass_2 = random.randint(0,9)
+            self.pass_3 = random.randint(0,9)
+
+    def breakage_print(self):
+        if breakage:
+            for self.rect in breakage:
+                if player.colliderect(breakage.rect):
+                    print(self.pass_1, self.pass_2, self.pass_3)
+
+    def update(self):
+        self.breakage_print(self)
+                    
+        
+
+                
 
         
 
@@ -128,7 +151,7 @@ info_surf = pygame.transform.scale(info_surf,(1000,50))
 info_surf_rec = info_surf.get_rect(midbottom = (600, 500))
 
 # set breakages spawning lists
-breakage_type_eligible_list = ['sail', 'hull', 'mast']
+breakage_type_eligible_list = ['sail', 'bow', 'floor_board', 'rope']
 breakage_type_ineligible_list = []
 
 # images
@@ -166,6 +189,8 @@ while True:
                     breakage.add(Breakage(removed_breakage))
                     breakage_type_eligible_list.remove(removed_breakage)
                     breakage_type_ineligible_list.append(removed_breakage) # might not be needed for use laster
+
+            
                 
 
 
@@ -176,15 +201,18 @@ while True:
     #main gameplay
     if game_state == 1:
         screen.blit(background_surf,(0,0))
+        
+        
 
         # updates pygame display.
-
+        breakage.update()
         # drawing the breakage
         breakage.draw(screen)
         
         # drawing the player
         player.draw(screen)
         player.update()
+        
     
     #title and game over screen
     if game_state == 2:
