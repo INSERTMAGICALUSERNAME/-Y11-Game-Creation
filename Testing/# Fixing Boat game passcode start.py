@@ -81,34 +81,22 @@ class Breakage(pygame.sprite.Sprite):
         if type == 'sail':
             self.y_pos = 301
             self.x_pos = 600
-            self.sail_pass_1 = random.randint(0,9)
-            self.sail_pass_2 = random.randint(0,9)
-            self.sail_pass_3 = random.randint(0,9)
-                
 
         elif type == 'bow':
             self.y_pos = 499
             self.x_pos = 1050
-            self.bow_pass_1 = random.randint(0,9)
-            self.bow_pass_2 = random.randint(0,9)
-            self.bow_pass_3 = random.randint(0,9)
-                
 
         elif type == 'floor_board':
             self.y_pos = 499
             self.x_pos = 400
-            self.floor_board_pass_1 = random.randint(0,9)
-            self.floor_board_pass_2 = random.randint(0,9)
-            self.floor_board_pass_3 = random.randint(0,9)
-                
 
         elif type == 'rope':
             self.y_pos = 499
             self.x_pos = 800
-            self.rope_pass_1 = random.randint(0,9)
-            self.rope_pass_2 = random.randint(0,9)
-            self.rope_pass_3 = random.randint(0,9)
-                
+
+        self.pass_1 = random.randint(0,9)
+        self.pass_2 = random.randint(0,9)
+        self.pass_3 = random.randint(0,9)
         
         self.rect = self.image.get_rect(midtop = (self.x_pos, self.y_pos))
       
@@ -119,18 +107,12 @@ class Breakage(pygame.sprite.Sprite):
         # b mean 'one Breakage object from the breakage group'
         for b in collided_breakage:
             if isinstance(b, Breakage):
-                
-                if b.type == 'sail':
-                    return [b.sail_pass_1, b.sail_pass_2, b.sail_pass_3]
-            
-                elif b.type == 'bow':
-                    return[b.bow_pass_1, b.bow_pass_2, b.bow_pass_3]
-                
-                elif b.type == 'floor_board':
-                    return [b.floor_board_pass_1, b.floor_board_pass_2, b.floor_board_pass_3]
-            
-                elif b.type == 'rope':
-                    return [b.rope_pass_1, b.rope_pass_2, b.rope_pass_3]
+
+                return [b.pass_1, b.pass_2, b.pass_3]
+                # reference for later
+                # if b.type == 'sail':
+               
+        
                     
 
 
