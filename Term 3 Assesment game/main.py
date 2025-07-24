@@ -6,6 +6,7 @@
 # imports
 import pygame
 from sys import exit
+import random
 
 
 class Player (pygame.sprite.Sprite):
@@ -84,7 +85,18 @@ FPS = 60
 player =  pygame.sprite.GroupSingle()
 player.add(Player())
 
-#text
+#Compass and wind
+wind_strength = 0
+
+wind_direction = random.randint(0, 1)  # 0 for left, 1 for right
+if wind_direction == 0:
+    wind_left = True
+    wind_right = False
+if wind_direction == 1:
+    wind_right = True
+    wind_left = False
+tilt = (920 + wind_strength)
+
 
 #title
 title_surf = pixel_font.render('Pacific Pursuit', True,"#006439")
@@ -109,6 +121,16 @@ info_surf_rec = info_surf.get_rect(midbottom = (600, 500))
 # images
 background_surf = pygame.image.load("images/stormy_background.png").convert_alpha()
 game_state = 2 
+
+compass_direction = pygame.image.load("images/compass_direction.png").convert_alpha()
+compass_direction = pygame.transform.scale2x(compass_direction)
+compass_direction_rect = compass_direction.get_rect(center = (tilt, 100))
+
+compass_bar = pygame.image.load("images/Compass_bar.png").convert_alpha()
+compass_bar = pygame.transform.scale2x(compass_bar)
+compass_bar_rect = compass_bar.get_rect(center = (1100,100))
+
+
 
 
 while True:
@@ -144,6 +166,46 @@ while True:
     #main gameplay
     if game_state == 1:
         screen.blit(background_surf,(0,-150))
+        #compass and wind
+        if wind_right:
+            
+            if tilt <= 840:
+                wind_strength -= 0.2
+            else:
+                wind_strength -= 0.1
+                
+        if wind_left:
+            
+            if tilt >= 935:
+                wind_strength += 0.2
+            else:
+                wind_strength += 0.1
+        
+        tilt = (890 + wind_strength/2)
+        
+
+        if tilt <= 800:
+            tilt = 800
+            
+        if tilt >= 980:
+            tilt = 980
+        print(tilt)
+
+        if wind_strength > 180:
+            wind_strength = 180
+        if wind_strength < -180:
+            wind_strength = -180
+        print(wind_strength)
+            
+        compass_direction_rect.x = tilt
+        
+        screen.blit(compass_direction,compass_direction_rect)
+        screen.blit(compass_bar,compass_bar_rect)
+        
+
+
+
+
         # updates pygame display.
         player.draw(screen)
         player.update()
