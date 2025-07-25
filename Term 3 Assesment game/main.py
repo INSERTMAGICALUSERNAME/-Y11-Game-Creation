@@ -73,11 +73,11 @@ class Breakage(pygame.sprite.Sprite):
         super().__init__()
         self.type = type
 
+
         breakage_image = pygame.image.load("images/breakage.png").convert_alpha()
         self.image = breakage_image
         
         # If type is sail, bow, floor_board or rope it sets the y and x position of the breakage
-        # and generates 3 random numbers between 0 and 9 for the passcode.
         if type == 'sail':
             self.y_pos = 301
             self.x_pos = 600
@@ -94,6 +94,7 @@ class Breakage(pygame.sprite.Sprite):
             self.y_pos = 499
             self.x_pos = 800
 
+        # generates 3 random numbers between 0 and 9 for the passcode.
         self.pass_1 = random.randint(0,9)
         self.pass_2 = random.randint(0,9)
         self.pass_3 = random.randint(0,9)
@@ -107,28 +108,8 @@ class Breakage(pygame.sprite.Sprite):
         # b mean 'one Breakage object from the breakage group'
         for b in collided_breakage:
             if isinstance(b, Breakage):
-
-                global breakage_colide_type
-
-                if b.type == 'sail':
-                    breakage_colide_type = 'sail'
-                elif b.type == 'bow':
-                    breakage_colide_type = 'bow'
-                elif b.type == 'floor_board':
-                    breakage_colide_type = 'floor_board'
-                elif b.type == 'rope':
-                    breakage_colide_type = 'rope'
-                else:
-                    breakage_colide_type = None
-
                 return [b.pass_1, b.pass_2, b.pass_3]
                 
-                
-               
-        
-                    
-
-
 
 # starts pygame
 pygame.init() 
@@ -194,7 +175,7 @@ game_state = 2
 
 # clocks
 breakage_timer = pygame.USEREVENT + 1
-pygame.time.set_timer(breakage_timer,1000)
+pygame.time.set_timer(breakage_timer,2500)
 
 while True:
 
@@ -213,6 +194,9 @@ while True:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 exit()
+
+
+        # if the game is in the main gameplay state
         if game_state == 1:
 
             # Breakages spawning. Gets a random item from a list. adds it to the breakages sprite class, removes from current list and than put on another list. 
@@ -223,6 +207,8 @@ while True:
                     breakage_type_eligible_list.remove(removed_breakage)
                     breakage_type_ineligible_list.append(removed_breakage) # might not be needed for use laster
 
+
+            # getting the player input. If digit is correct moves to the next digit, if not resets all digits to None.
             elif event.type == pygame.KEYDOWN:
 
                 if pygame.sprite.spritecollide(player.sprite, breakage, False):
@@ -262,15 +248,6 @@ while True:
     #main gameplay
     if game_state == 1:
         screen.blit(background_surf,(0,0))
-        
-       
-        # updates pygame display.
-        # drawing the breakage
-        breakage.draw(screen)
-                
-        # drawing the player
-        player.draw(screen)
-        player.update()
 
         # getting the passcode from the breakage class
         for b in breakage:
@@ -302,45 +279,71 @@ while True:
                 # display the passcode digits
                 pass_digit_1_text = pacific_font.render(f"{pass_digit_1}", True, font_colour_1)
                 pass_digit_1_rect = pass_digit_1_text.get_rect(center = (500,500 ))
-
+                
                 pass_digit_2_text = pacific_font.render(f"{pass_digit_2}", True, font_colour_2)
                 pass_digit_2_rect = pass_digit_2_text.get_rect(center = (600,500 ))
 
                 pass_digit_3_text = pacific_font.render(f"{pass_digit_3}", True, font_colour_3)
                 pass_digit_3_rect = pass_digit_3_text.get_rect(center = (700,500 ))
 
+                # display the input digits
                 screen.blit(pass_digit_1_text, pass_digit_1_rect)
                 screen.blit(pass_digit_2_text, pass_digit_2_rect)
                 screen.blit(pass_digit_3_text, pass_digit_3_rect)
 
+        # if player is colliding with breakage, and the passcode is correct, it will remove the breakage from the group and add it to the eligible list.
+        # it will also reset the input digits to None.
+        collided_breakage_2 = pygame.sprite.spritecollide(player.sprite, breakage, False)
+
+        for b in collided_breakage_2:
+            if isinstance(b, Breakage):
+                
                 if pass_digit_1 == input_digit_1 and pass_digit_2 == input_digit_2 and pass_digit_3 == input_digit_3:
-                    if breakage_colide_type == 'sail':
-                        breakage_type_ineligible_list.remove('sail')
-                        breakage_type_eligible_list.append('sail')
-                        breakage.remove(type='sail')
-
-                    elif breakage_colide_type == 'bow':
-                        breakage_type_ineligible_list.remove('bow')
-                        breakage_type_eligible_list.append('bow')
-                        breakage.remove(type='bow')
-
-                    elif breakage_colide_type == 'floor_board':
-                        breakage_type_ineligible_list.remove('floor_board')
-                        breakage_type_eligible_list.append('floor_board')
-                        breakage.remove(type='floor_board')
-
-                    elif breakage_colide_type == 'rope':
-                        breakage_type_ineligible_list.remove('rope')
-                        breakage_type_eligible_list.append('rope')
-                        breakage.remove(type='rope')
-
-        
                     
+                    if b.type == 'sail':
+                        
+                        if 'sail' in breakage_type_ineligible_list:
+                            breakage_type_ineligible_list.remove('sail')
+                            breakage_type_eligible_list.append('sail')
+                            breakage.remove(b)
+
+                    elif b.type == 'bow':
+                        if 'bow' in breakage_type_ineligible_list:
+                            breakage_type_ineligible_list.remove('bow')
+                            breakage_type_eligible_list.append('bow')
+                            breakage.remove(b)
+                        
+                        breakage.remove(b)
+
+                    elif b.type == 'floor_board':
+                        if 'floor_board' in breakage_type_ineligible_list:
+                            breakage_type_ineligible_list.remove('floor_board')
+                            breakage_type_eligible_list.append('floor_board')
+                            breakage.remove(b)
+
+                    elif b.type == 'rope':
+                        if 'rope' in breakage_type_ineligible_list:
+                            breakage_type_ineligible_list.remove('rope')
+                            breakage_type_eligible_list.append('rope')
+                            breakage.remove(b)
+                                    
+
+                    input_digit_1 = None
+                    input_digit_2 = None
+                    input_digit_3 = None
+
+            
+                        
+        # drawing the breakage
+        breakage.draw(screen)
+                
+        # drawing and updates the player
+        player.draw(screen)
+        player.update()
+            
             
         
-        
-    
-    #title and game over screen
+        #title and game over screen
     if game_state == 2:
 
         screen.blit(background_surf,(0,0))
