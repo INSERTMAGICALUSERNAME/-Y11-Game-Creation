@@ -108,9 +108,22 @@ class Breakage(pygame.sprite.Sprite):
         for b in collided_breakage:
             if isinstance(b, Breakage):
 
+                global breakage_colide_type
+
+                if b.type == 'sail':
+                    breakage_colide_type = 'sail'
+                elif b.type == 'bow':
+                    breakage_colide_type = 'bow'
+                elif b.type == 'floor_board':
+                    breakage_colide_type = 'floor_board'
+                elif b.type == 'rope':
+                    breakage_colide_type = 'rope'
+                else:
+                    breakage_colide_type = None
+
                 return [b.pass_1, b.pass_2, b.pass_3]
-                # reference for later
-                # if b.type == 'sail':
+                
+                
                
         
                     
@@ -134,6 +147,14 @@ passcode = []
 pass_digit_1 = 0
 pass_digit_2 = 0
 pass_digit_3 = 0
+
+
+input_digit_1 = None
+input_digit_2 = None
+input_digit_3 = None
+
+breakage_colide_type = None
+
 
 
 # sets the frame rate of the game.
@@ -202,13 +223,41 @@ while True:
                     breakage_type_eligible_list.remove(removed_breakage)
                     breakage_type_ineligible_list.append(removed_breakage) # might not be needed for use laster
 
-            
+            elif event.type == pygame.KEYDOWN:
+
+                if pygame.sprite.spritecollide(player.sprite, breakage, False):
                 
+                    if pygame.K_0 <= event.key <= pygame.K_9:
 
+                        
+                        if input_digit_1 == pass_digit_1 and input_digit_2 == pass_digit_2:
+                            input_digit_3 = event.key - pygame.K_0
+                            if input_digit_3 != pass_digit_3:
+                                input_digit_1 = None
+                                input_digit_2 = None
+                                input_digit_3 = None
 
-                    
+                        elif input_digit_1 == pass_digit_1:
+                            input_digit_2 = event.key - pygame.K_0
+                            if input_digit_2 != pass_digit_2:
+                                input_digit_1 = None
+                                input_digit_2 = None
+                        
 
-       
+                        elif input_digit_1 == None:
+                            input_digit_1 = event.key - pygame.K_0
+                            if input_digit_1 != pass_digit_1:
+                                input_digit_1 = None
+
+                        else:
+                            input_digit_1 = None
+                            input_digit_2 = None
+                            input_digit_3 = None
+                    else:
+                        input_digit_1 = None
+                        input_digit_2 = None
+                        input_digit_3 = None
+            
 
     #main gameplay
     if game_state == 1:
@@ -228,25 +277,65 @@ while True:
             passcode = b.collition_passcode()
             if passcode:
                 
+
                 pass_digit_1 = passcode[0]
                 pass_digit_2 = passcode[1]
                 pass_digit_3 = passcode[2]
 
-                font_colour = (255,0,0)
+
+                # if the input digit is equal to the passcode digit, it will change the font colour to green
+                if input_digit_1 == pass_digit_1:
+                    font_colour_1 = (0,255,0)
+                else:
+                    font_colour_1 = (255,0,0)
+                if input_digit_2 == pass_digit_2:
+                    font_colour_2 = (0,255,0)
+                else:
+                    font_colour_2 = (255,0,0)
+                if input_digit_3 == pass_digit_3:
+                    font_colour_3 = (0,255,0)
+                else:
+                    font_colour_3 = (255,0,0)
+                
+               
                 
                 # display the passcode digits
-                pass_digit_1_text = pacific_font.render(f"{pass_digit_1}", True, font_colour)
+                pass_digit_1_text = pacific_font.render(f"{pass_digit_1}", True, font_colour_1)
                 pass_digit_1_rect = pass_digit_1_text.get_rect(center = (500,500 ))
 
-                pass_digit_2_text = pacific_font.render(f"{pass_digit_2}", True, font_colour)
+                pass_digit_2_text = pacific_font.render(f"{pass_digit_2}", True, font_colour_2)
                 pass_digit_2_rect = pass_digit_2_text.get_rect(center = (600,500 ))
 
-                pass_digit_3_text = pacific_font.render(f"{pass_digit_3}", True, font_colour)
+                pass_digit_3_text = pacific_font.render(f"{pass_digit_3}", True, font_colour_3)
                 pass_digit_3_rect = pass_digit_3_text.get_rect(center = (700,500 ))
 
                 screen.blit(pass_digit_1_text, pass_digit_1_rect)
                 screen.blit(pass_digit_2_text, pass_digit_2_rect)
                 screen.blit(pass_digit_3_text, pass_digit_3_rect)
+
+                if pass_digit_1 == input_digit_1 and pass_digit_2 == input_digit_2 and pass_digit_3 == input_digit_3:
+                    if breakage_colide_type == 'sail':
+                        breakage_type_ineligible_list.remove('sail')
+                        breakage_type_eligible_list.append('sail')
+                        breakage.remove(type='sail')
+
+                    elif breakage_colide_type == 'bow':
+                        breakage_type_ineligible_list.remove('bow')
+                        breakage_type_eligible_list.append('bow')
+                        breakage.remove(type='bow')
+
+                    elif breakage_colide_type == 'floor_board':
+                        breakage_type_ineligible_list.remove('floor_board')
+                        breakage_type_eligible_list.append('floor_board')
+                        breakage.remove(type='floor_board')
+
+                    elif breakage_colide_type == 'rope':
+                        breakage_type_ineligible_list.remove('rope')
+                        breakage_type_eligible_list.append('rope')
+                        breakage.remove(type='rope')
+
+        
+                    
             
         
         
