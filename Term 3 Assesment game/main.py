@@ -136,6 +136,8 @@ input_digit_3 = None
 
 breakage_colide_type = None
 
+wrong_text = 0
+
 
 
 # sets the frame rate of the game.
@@ -213,37 +215,40 @@ while True:
 
                 if pygame.sprite.spritecollide(player.sprite, breakage, False):
                 
-                    if pygame.K_0 <= event.key <= pygame.K_9:
-
+                    if event.unicode.isdigit():
+                        digit = int(event.unicode)
                         
                         if input_digit_1 == pass_digit_1 and input_digit_2 == pass_digit_2:
-                            input_digit_3 = event.key - pygame.K_0
+                            input_digit_3 = digit
                             if input_digit_3 != pass_digit_3:
                                 input_digit_1 = None
                                 input_digit_2 = None
                                 input_digit_3 = None
+                                wrong_text = 60
 
                         elif input_digit_1 == pass_digit_1:
-                            input_digit_2 = event.key - pygame.K_0
+                            input_digit_2 = digit
                             if input_digit_2 != pass_digit_2:
                                 input_digit_1 = None
                                 input_digit_2 = None
+                                wrong_text = 60
                         
 
                         elif input_digit_1 == None:
-                            input_digit_1 = event.key - pygame.K_0
+                            input_digit_1 = digit
                             if input_digit_1 != pass_digit_1:
                                 input_digit_1 = None
+                                wrong_text = 60
 
                         else:
                             input_digit_1 = None
                             input_digit_2 = None
                             input_digit_3 = None
-                    else:
+
+                else:
                         input_digit_1 = None
                         input_digit_2 = None
                         input_digit_3 = None
-            
 
     #main gameplay
     if game_state == 1:
@@ -261,30 +266,52 @@ while True:
 
 
                 # if the input digit is equal to the passcode digit, it will change the font colour to green
+                # if the input digit is not equal to the passcode digit, it will change the font colour to orange for 60 frames, then red.
+            
                 if input_digit_1 == pass_digit_1:
                     font_colour_1 = (0,255,0)
+                elif wrong_text > 0:
+                    wrong_text -= 1
+                    font_colour_1 = (255, 165, 0)
+                    font_colour_2 = (255, 165, 0)
+                    font_colour_3 = (255, 165, 0)
                 else:
                     font_colour_1 = (255,0,0)
+                
+
                 if input_digit_2 == pass_digit_2:
                     font_colour_2 = (0,255,0)
+                elif wrong_text > 0:
+                    wrong_text -= 1
+                    font_colour_1 = (255, 165, 0)
+                    font_colour_2 = (255, 165, 0)
+                    font_colour_3 = (255, 165, 0)
                 else:
                     font_colour_2 = (255,0,0)
+
+
+                    
                 if input_digit_3 == pass_digit_3:
                     font_colour_3 = (0,255,0)
+                elif wrong_text > 0:
+                    wrong_text -= 1
+                    font_colour_1 = (255, 165, 0)
+                    font_colour_2 = (255, 165, 0)
+                    font_colour_3 = (255, 165, 0)
                 else:
                     font_colour_3 = (255,0,0)
-                
+            
                
                 
                 # display the passcode digits
                 pass_digit_1_text = pacific_font.render(f"{pass_digit_1}", True, font_colour_1)
-                pass_digit_1_rect = pass_digit_1_text.get_rect(center = (500,500 ))
+                pass_digit_1_rect = pass_digit_1_text.get_rect(center = (500,600 ))
                 
                 pass_digit_2_text = pacific_font.render(f"{pass_digit_2}", True, font_colour_2)
-                pass_digit_2_rect = pass_digit_2_text.get_rect(center = (600,500 ))
+                pass_digit_2_rect = pass_digit_2_text.get_rect(center = (600,600 ))
 
                 pass_digit_3_text = pacific_font.render(f"{pass_digit_3}", True, font_colour_3)
-                pass_digit_3_rect = pass_digit_3_text.get_rect(center = (700,500 ))
+                pass_digit_3_rect = pass_digit_3_text.get_rect(center = (700,600 ))
 
                 # display the input digits
                 screen.blit(pass_digit_1_text, pass_digit_1_rect)
