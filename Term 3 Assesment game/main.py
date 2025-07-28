@@ -123,6 +123,7 @@ pygame.display.set_caption("Ultimate Pygame")
 #creating font
 pacific_font = pygame.font.Font('Font/Pacifico-regular.ttf',50)
 
+
 # set up passcode variables
 passcode = []
 pass_digit_1 = 0
@@ -140,6 +141,8 @@ wrong_text = 0
 
 
 
+
+
 # sets the frame rate of the game.
 clock = pygame.time.Clock()
 
@@ -153,8 +156,12 @@ FPS = 60
 player =  pygame.sprite.GroupSingle()
 player.add(Player())
 
+
 # breakage group
 breakage = pygame.sprite.Group()
+
+
+#text
 
 
 #title
@@ -162,9 +169,11 @@ title_surf = pacific_font.render('Pacific Pursuit', True,"#006439")
 title_rec = title_surf.get_rect(center = (600,373))
 
 #blurb
+
 info_surf = pacific_font.render('Press Space to Start, Press esacpe to quit, Press "h" for how to play',True,('#006439'))
 info_surf = pygame.transform.scale(info_surf,(1000,50))
 info_surf_rec = info_surf.get_rect(midbottom = (600, 500))
+
 
 # set breakages spawning lists
 breakage_type_eligible_list = ['sail', 'bow', 'floor_board', 'rope']
@@ -178,7 +187,7 @@ game_state = 2
 # clocks
 breakage_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(breakage_timer,2500)
-
+ 
 while True:
 
     
@@ -191,11 +200,14 @@ while True:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 game_state = 1   
             if event.type == pygame.KEYDOWN and event.key == pygame.K_h :
+
                 game_state = 3
+
                 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 exit()
+
 
 
         # if the game is in the main gameplay state
@@ -374,17 +386,18 @@ while True:
     if game_state == 2:
 
         screen.blit(background_surf,(0,0))
+
         pygame.draw.rect(screen,"#673506FF",(50,300,1100,300))
         pygame.draw.rect(screen,"#2C2C2CCC",(50,300,1100,300),10,2)
         screen.blit(info_surf,info_surf_rec)
         screen.blit(title_surf,title_rec)
         
     if game_state == 3:
+
         screen.blit(background_surf,(0,0))
         pygame.draw.rect(screen,"#673506FF",(50,25,1100,625))
         pygame.draw.rect(screen,"#2C2C2CCC",(50,25,1100,625),10,2)
-        
-
+       
    
     pygame.display.update()
     
