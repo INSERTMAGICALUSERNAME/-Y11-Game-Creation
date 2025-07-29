@@ -142,6 +142,7 @@ class Button(pygame.sprite.Sprite):
         # self.image = pygame.transform.scale(self.image,(360,65))
         self.rect = self.image.get_rect(center = (self.x_pos, self.y_pos))
 
+
     def check_click(self,mouse_pos,event):
         clicked = None
         if self.rect.collidepoint(mouse_pos):
@@ -152,37 +153,72 @@ class Button(pygame.sprite.Sprite):
                     clicked = 2
                 if plank.type == 'bottom':
                     clicked = 3       
-        return clicked
-            
-        
-        
-        
-        
-            
+        return clicked 
 
-
-    
-    
     def update(self):
         self.draw(screen)
         self.check_click(pygame.mouse.get_pos())
+    
+class Game_over_buttons(pygame.sprite.Sprite):
+    def __init__(self, type):
+        super().__init__()
+        self.object_type = type
+
+        self.image = pygame.image.load("images/Wooden_plank.png").convert_alpha()
+        self.x_pos = 600
+        if type == 'top':
+            self.y_pos = 325
+        if type == "bottom":
+            self.y_pos = 418
+
+
+
+        self.rect = self.image.get_rect(center = (self.x_pos,self.y_pos))
+
+    def check_click(self):
+        clicked = None
+        if self.rect.collidepoint(pygame.mouse.get_pos()):
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if  self.object_type == 'top':
+                    clicked = 1
+                if self.object_type == 'bottom':
+                    clicked = 2     
+        return clicked
+        
+    def update(self):
+        global game_state
+          
+
+        clicked = self.check_click()
+        if clicked == 1:
+            game_state = 1 
+        if clicked == 2:
+            game_state = 2
+
+        if self.object_type == 'top':
+            restart_surf_rect = restart_game_over_surf.get_rect(center = (600, self.y_pos))
+            screen.blit(restart_game_over_surf,restart_surf_rect)
+
+        if self.object_type == 'bottom':
+            home_game_over_rect = home_game_over_surf.get_rect(center = (600, self.y_pos))
+            screen.blit(home_game_over_surf, home_game_over_rect)
+        
+
+
         
     
 
 
-# starts pygame
+# pygame set up code
 pygame.init() 
-
-# Creates the play window
 screen = pygame.display.set_mode((1200,675))
-
-# sets the title for the game.
 pygame.display.set_caption("Ultimate Pygame")
-
-#creating font
 pacific_font = pygame.font.Font('Font/Pacifico-regular.ttf',75)
 pixel_font = pygame.font.Font('Font/Pixeltype.ttf',50)
-
+clock = pygame.time.Clock()
+pygame.display.set_caption("Crossing the Deep")
+FPS = 60
+game_state = 4
 
 # set up passcode variables
 passcode = []
@@ -202,22 +238,29 @@ wrong_text = 0
 fixing = False
 
 
-
-
-
-# sets the frame rate of the game.
-clock = pygame.time.Clock()
-
-# set game display name
-pygame.display.set_caption("Crossing the Deep")
-
-FPS = 60
-
 # Groups
-# add player to group
+
+#player group
 player =  pygame.sprite.GroupSingle()
 player.add(Player())
 
+#buttons
+top = 'top'
+middle = 'middle'
+bottom = 'bottom'
+# home screen buttons
+button = pygame.sprite.Group()
+button.add(Button(top))
+button.add(Button(middle))
+button.add(Button(bottom))
+
+# game over screen buttons
+game_over_button = pygame.sprite.Group()
+game_over_button.add(Game_over_buttons(top))
+game_over_button.add(Game_over_buttons(bottom))
+
+# breakage group
+breakage = pygame.sprite.Group()
 
 #Compass and wind
 wind_strength = 0
@@ -230,16 +273,6 @@ if wind_direction == 1:
     wind_right = True
     wind_left = False
 tilt = (920 + wind_strength)
-
-
-
-# breakage group
-breakage = pygame.sprite.Group()
-
-
-#text
-
-
 
 #title
 title_surf = pacific_font.render('Pacific Pursuit', True,"#5fa8a9")
@@ -267,30 +300,31 @@ quit_surf = pygame.transform.scale(quit_surf,(200,50))
 quit_surf_rec = quit_surf.get_rect(midbottom = (600, 490))
 
 
+#game over blurb
+restart_game_over_surf = pacific_font.render('RESTART',True,("#342218"))
+restart_game_over_surf = pygame.transform.scale(restart_game_over_surf,(200,50))
 
-#buttons
-top = 'top'
-middle = 'middle'
-bottom = 'bottom'
-button = pygame.sprite.Group()
-button.add(Button(top))
-button.add(Button(middle))
-button.add(Button(bottom))
+home_game_over_surf = pacific_font.render('HOME',True,("#342218"))
+home_game_over_surf = pygame.transform.scale(home_game_over_surf,(200,50))
 
 
-
-# set breakages spawning lists
+#breakages spawning lists
 breakage_type_eligible_list = ['sail', 'bow', 'floor_board', 'rope']
 breakage_type_ineligible_list = []
 
 # images
 background_surf = pygame.image.load("images/stormy_background(Medium).png").convert_alpha()
 
-game_state = 2 
-
+# compass_direction surfs and rects
 compass_direction = pygame.image.load("images/compass_direction.png").convert_alpha()
 compass_direction = pygame.transform.scale2x(compass_direction)
 compass_direction_rect = compass_direction.get_rect(center = (tilt, 100))
+
+hide_compass_direction_left_surf = pygame.image.load("images/hide_compass_direction_right.png").convert_alpha()
+hide_compass_direction_left_rect = hide_compass_direction_left_surf.get_rect(topleft = (1178,90))
+
+hide_compass_direction_right_surf = pygame.image.load("images/hide_compass_direction_left.png").convert_alpha()
+hide_compass_direction_right_rect = hide_compass_direction_right_surf.get_rect(topleft = (772,90))
 
 compass_bar = pygame.image.load("images/Compass_bar.png").convert_alpha()
 compass_bar = pygame.transform.scale2x(compass_bar)
@@ -301,7 +335,7 @@ compass_bar_rect = compass_bar.get_rect(center = (1100,100))
 
 # clocks
 breakage_timer = pygame.USEREVENT + 1
-pygame.time.set_timer(breakage_timer,2500)
+pygame.time.set_timer(breakage_timer,5000)
  
 while True:
 
@@ -325,12 +359,6 @@ while True:
                     pygame.quit()
                     exit()
             
-            
-
-
-
-
-
 
         # if the game is in the main gameplay state
         if game_state == 1:
@@ -396,8 +424,15 @@ while True:
                         input_digit_2 = None
                         input_digit_3 = None
                         fixing = False
-                
-                        
+        
+        # Restart game
+        if game_state == 4:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                game_state = 1
+
+
+
+
 
     #main gameplay
     if game_state == 1:
@@ -438,9 +473,10 @@ while True:
         
         screen.blit(compass_direction,compass_direction_rect)
         screen.blit(compass_bar,compass_bar_rect)
-        pygame.draw.rect(screen,"#000000FF",(772,90,250,20))
-        pygame.draw.rect(screen,"#000000FF",(1178,90,22,20))
 
+        screen.blit(hide_compass_direction_right_surf,hide_compass_direction_right_rect)
+        screen.blit(hide_compass_direction_left_surf,hide_compass_direction_left_rect)
+        
 
 
 
@@ -592,6 +628,12 @@ while True:
         screen.blit(background_surf,(0,0))
         pygame.draw.rect(screen,"#673506FF",(50,25,1100,625))
         pygame.draw.rect(screen,"#2C2C2CCC",(50,25,1100,625),10,2)
+    if game_state == 4:
+        screen.blit(background_surf,(0,0))
+        game_over_button.draw(screen)
+        game_over_button.update()
+       
+        
 
    
     pygame.display.update()
