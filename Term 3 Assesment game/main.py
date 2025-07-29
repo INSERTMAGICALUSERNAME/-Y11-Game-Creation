@@ -73,8 +73,13 @@ class Breakage(pygame.sprite.Sprite):
         super().__init__()
         self.type = type
 
+        border_width = 4
+        border_color = (255, 0, 0)
 
+        
         breakage_image = pygame.image.load("images/breakage.png").convert_alpha()
+        alpha_value = 50  # 50% transparency
+        breakage_image.set_alpha(alpha_value)
         self.image = breakage_image
         
         # If type is sail, bow, floor_board or rope it sets the y and x position of the breakage
@@ -100,6 +105,10 @@ class Breakage(pygame.sprite.Sprite):
         self.pass_3 = random.randint(0,9)
         
         self.rect = self.image.get_rect(midtop = (self.x_pos, self.y_pos))
+        w, h = breakage_image.get_size()
+        self.image = pygame.Surface((w + border_width, h + border_width), pygame.SRCALPHA)
+        pygame.draw.rect(self.image, border_color, self.image.get_rect(), border_width)
+
       
 
     # this is used to get the passcode when the player collides with the breakage based on the type of breakage
@@ -230,7 +239,7 @@ while True:
 
                 if pygame.sprite.spritecollide(player.sprite, breakage, False):
 
-                    if event.key == pygame.K_f:
+                    if event.key == pygame.K_f or event.key == pygame.K_KP_PLUS or event.key == pygame.K_KP_ENTER:
                         fixing = True
                 
                     if fixing:
