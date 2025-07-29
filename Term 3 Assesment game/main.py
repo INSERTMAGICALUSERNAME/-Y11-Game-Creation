@@ -73,8 +73,13 @@ class Breakage(pygame.sprite.Sprite):
         super().__init__()
         self.type = type
 
+        border_width = 4
+        border_color = (255, 0, 0)
 
+        
         breakage_image = pygame.image.load("images/breakage.png").convert_alpha()
+        alpha_value = 50  # 50% transparency
+        breakage_image.set_alpha(alpha_value)
         self.image = breakage_image
         
         # If type is sail, bow, floor_board or rope it sets the y and x position of the breakage
@@ -100,6 +105,10 @@ class Breakage(pygame.sprite.Sprite):
         self.pass_3 = random.randint(0,9)
         
         self.rect = self.image.get_rect(midtop = (self.x_pos, self.y_pos))
+        w, h = breakage_image.get_size()
+        self.image = pygame.Surface((w + border_width, h + border_width), pygame.SRCALPHA)
+        pygame.draw.rect(self.image, border_color, self.image.get_rect(), border_width)
+
       
 
     # this is used to get the passcode when the player collides with the breakage based on the type of breakage
@@ -138,6 +147,8 @@ input_digit_3 = None
 breakage_colide_type = None
 
 wrong_text = 0
+
+fixing = False
 
 
 
@@ -221,114 +232,135 @@ while True:
                     breakage_type_eligible_list.remove(removed_breakage)
                     breakage_type_ineligible_list.append(removed_breakage) # might not be needed for use laster
 
-
-            # getting the player input. If digit is correct moves to the next digit, if not resets all digits to None.
+            # if user presses 'f' key, it will set fixing to True, allowing the player to input digits.
+            # if user presses 'r' key, it will set fixing to False, resetting the input digits to None.
+            # if user input is the correct digit game moves to the next digit, if not resets all digits to None.
             elif event.type == pygame.KEYDOWN:
 
                 if pygame.sprite.spritecollide(player.sprite, breakage, False):
+
+                    if event.key == pygame.K_f or event.key == pygame.K_KP_PLUS or event.key == pygame.K_KP_ENTER:
+                        fixing = True
                 
-                    if event.unicode.isdigit():
-                        digit = int(event.unicode)
-                        
-                        if input_digit_1 == pass_digit_1 and input_digit_2 == pass_digit_2:
-                            input_digit_3 = digit
-                            if input_digit_3 != pass_digit_3:
+                    if fixing:
+                        if event.unicode.isdigit():
+                            digit = int(event.unicode)
+                            
+                            if input_digit_1 == pass_digit_1 and input_digit_2 == pass_digit_2:
+                                input_digit_3 = digit
+                                if input_digit_3 != pass_digit_3:
+                                    input_digit_1 = None
+                                    input_digit_2 = None
+                                    input_digit_3 = None
+                                    wrong_text = 60
+
+                            elif input_digit_1 == pass_digit_1:
+                                input_digit_2 = digit
+                                if input_digit_2 != pass_digit_2:
+                                    input_digit_1 = None
+                                    input_digit_2 = None
+                                    wrong_text = 60
+                            
+
+                            elif input_digit_1 == None:
+                                input_digit_1 = digit
+                                if input_digit_1 != pass_digit_1:
+                                    input_digit_1 = None
+                                    wrong_text = 60
+
+                            else:
                                 input_digit_1 = None
                                 input_digit_2 = None
                                 input_digit_3 = None
-                                wrong_text = 60
-
-                        elif input_digit_1 == pass_digit_1:
-                            input_digit_2 = digit
-                            if input_digit_2 != pass_digit_2:
-                                input_digit_1 = None
-                                input_digit_2 = None
-                                wrong_text = 60
+                    if event.key == pygame.K_r:
+                        fixing = False
+                        input_digit_1 = None
+                        input_digit_2 = None
+                        input_digit_3 = None
+                            
+                            
                         
-
-                        elif input_digit_1 == None:
-                            input_digit_1 = digit
-                            if input_digit_1 != pass_digit_1:
-                                input_digit_1 = None
-                                wrong_text = 60
-
-                        else:
-                            input_digit_1 = None
-                            input_digit_2 = None
-                            input_digit_3 = None
-
                 else:
                         input_digit_1 = None
                         input_digit_2 = None
                         input_digit_3 = None
+                        fixing = False
+                
+                        
 
     #main gameplay
     if game_state == 1:
         screen.blit(background_surf,(0,0))
+        # if the player is not colliding with a breakage, it will set fixing to False
+        if not pygame.sprite.spritecollide(player.sprite, breakage, False):
+            fixing = False
+            
+
 
         # getting the passcode from the breakage class
         for b in breakage:
-            passcode = b.collition_passcode()
-            if passcode:
-                
-
-                pass_digit_1 = passcode[0]
-                pass_digit_2 = passcode[1]
-                pass_digit_3 = passcode[2]
-
-
-                # if the input digit is equal to the passcode digit, it will change the font colour to green
-                # if the input digit is not equal to the passcode digit, it will change the font colour to orange for 60 frames, then red.
-            
-                if input_digit_1 == pass_digit_1:
-                    font_colour_1 = (0,255,0)
-                elif wrong_text > 0:
-                    wrong_text -= 1
-                    font_colour_1 = (255, 165, 0)
-                    font_colour_2 = (255, 165, 0)
-                    font_colour_3 = (255, 165, 0)
-                else:
-                    font_colour_1 = (255,0,0)
-                
-
-                if input_digit_2 == pass_digit_2:
-                    font_colour_2 = (0,255,0)
-                elif wrong_text > 0:
-                    wrong_text -= 1
-                    font_colour_1 = (255, 165, 0)
-                    font_colour_2 = (255, 165, 0)
-                    font_colour_3 = (255, 165, 0)
-                else:
-                    font_colour_2 = (255,0,0)
-
-
+            if fixing:
+                passcode = b.collition_passcode()
+                if passcode:
                     
-                if input_digit_3 == pass_digit_3:
-                    font_colour_3 = (0,255,0)
-                elif wrong_text > 0:
-                    wrong_text -= 1
-                    font_colour_1 = (255, 165, 0)
-                    font_colour_2 = (255, 165, 0)
-                    font_colour_3 = (255, 165, 0)
-                else:
-                    font_colour_3 = (255,0,0)
-            
-               
-                
-                # display the passcode digits
-                pass_digit_1_text = pacific_font.render(f"{pass_digit_1}", True, font_colour_1)
-                pass_digit_1_rect = pass_digit_1_text.get_rect(center = (500,600 ))
-                
-                pass_digit_2_text = pacific_font.render(f"{pass_digit_2}", True, font_colour_2)
-                pass_digit_2_rect = pass_digit_2_text.get_rect(center = (600,600 ))
 
-                pass_digit_3_text = pacific_font.render(f"{pass_digit_3}", True, font_colour_3)
-                pass_digit_3_rect = pass_digit_3_text.get_rect(center = (700,600 ))
+                    pass_digit_1 = passcode[0]
+                    pass_digit_2 = passcode[1]
+                    pass_digit_3 = passcode[2]
 
-                # display the input digits
-                screen.blit(pass_digit_1_text, pass_digit_1_rect)
-                screen.blit(pass_digit_2_text, pass_digit_2_rect)
-                screen.blit(pass_digit_3_text, pass_digit_3_rect)
+
+                    # if the input digit is equal to the passcode digit, it will change the font colour to green
+                    # if the input digit is not equal to the passcode digit, it will change the font colour to orange for 60 frames, then red.
+                
+                    if input_digit_1 == pass_digit_1:
+                        font_colour_1 = (0,255,0)
+                    elif wrong_text > 0:
+                        wrong_text -= 1
+                        font_colour_1 = (255, 165, 0)
+                        font_colour_2 = (255, 165, 0)
+                        font_colour_3 = (255, 165, 0)
+                    else:
+                        font_colour_1 = (255,0,0)
+                    
+
+                    if input_digit_2 == pass_digit_2:
+                        font_colour_2 = (0,255,0)
+                    elif wrong_text > 0:
+                        wrong_text -= 1
+                        font_colour_1 = (255, 165, 0)
+                        font_colour_2 = (255, 165, 0)
+                        font_colour_3 = (255, 165, 0)
+                    else:
+                        font_colour_2 = (255,0,0)
+
+
+                        
+                    if input_digit_3 == pass_digit_3:
+                        font_colour_3 = (0,255,0)
+                    elif wrong_text > 0:
+                        wrong_text -= 1
+                        font_colour_1 = (255, 165, 0)
+                        font_colour_2 = (255, 165, 0)
+                        font_colour_3 = (255, 165, 0)
+                    else:
+                        font_colour_3 = (255,0,0)
+                
+                
+                    
+                    # display the passcode digits
+                    pass_digit_1_text = pacific_font.render(f"{pass_digit_1}", True, font_colour_1)
+                    pass_digit_1_rect = pass_digit_1_text.get_rect(center = (500,600 ))
+                    
+                    pass_digit_2_text = pacific_font.render(f"{pass_digit_2}", True, font_colour_2)
+                    pass_digit_2_rect = pass_digit_2_text.get_rect(center = (600,600 ))
+
+                    pass_digit_3_text = pacific_font.render(f"{pass_digit_3}", True, font_colour_3)
+                    pass_digit_3_rect = pass_digit_3_text.get_rect(center = (700,600 ))
+
+                    # display the input digits
+                    screen.blit(pass_digit_1_text, pass_digit_1_rect)
+                    screen.blit(pass_digit_2_text, pass_digit_2_rect)
+                    screen.blit(pass_digit_3_text, pass_digit_3_rect)
 
         # if player is colliding with breakage, and the passcode is correct, it will remove the breakage from the group and add it to the eligible list.
         # it will also reset the input digits to None.
