@@ -67,10 +67,11 @@ class Player (pygame.sprite.Sprite):
         
 
 
-
-
 class Breakage(pygame.sprite.Sprite):
-    border_width = 4
+    def __init__(self, type):
+        super().__init__()
+        self.type = type
+        border_width = 4
         border_color = (255, 0, 0)
 
         
