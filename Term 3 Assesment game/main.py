@@ -14,7 +14,8 @@ class Player (pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         
-        self.player_image = pygame.image.load("images/player_green.png").convert_alpha()
+        self.player_image_no_scale = pygame.image.load("images/player.png").convert_alpha()
+        self.player_image = pygame.transform.scale(self.player_image_no_scale, (50, 100))
 
         self.image = self.player_image
         self.rect =  self.player_image.get_rect(midbottom = (600,570))
@@ -255,7 +256,7 @@ pixel_font = pygame.font.Font('Font/Pixeltype.ttf',50)
 clock = pygame.time.Clock()
 pygame.display.set_caption("Crossing the Deep")
 FPS = 60
-game_state = 4
+game_state = 2
 
 # set up passcode variables
 passcode = []
@@ -372,11 +373,10 @@ raised_deck = pygame.Rect(310, 530, 510, 20)
 
 # clocks
 breakage_timer = pygame.USEREVENT + 1
-pygame.time.set_timer(breakage_timer,1500)
+pygame.time.set_timer(breakage_timer,5000)
  
 while True:
-    mouse_pos = pygame.mouse.get_pos()
-    print(mouse_pos)
+    
 
 
     
@@ -584,13 +584,13 @@ while True:
                     
                     # display the passcode digits
                     pass_digit_1_text = pacific_font.render(f"{pass_digit_1}", True, font_colour_1)
-                    pass_digit_1_rect = pass_digit_1_text.get_rect(center = (500,600 ))
+                    pass_digit_1_rect = pass_digit_1_text.get_rect(center = (500,615 ))
                     
                     pass_digit_2_text = pacific_font.render(f"{pass_digit_2}", True, font_colour_2)
-                    pass_digit_2_rect = pass_digit_2_text.get_rect(center = (600,600 ))
+                    pass_digit_2_rect = pass_digit_2_text.get_rect(center = (600,615 ))
 
                     pass_digit_3_text = pacific_font.render(f"{pass_digit_3}", True, font_colour_3)
-                    pass_digit_3_rect = pass_digit_3_text.get_rect(center = (700,600 ))
+                    pass_digit_3_rect = pass_digit_3_text.get_rect(center = (700,615 ))
 
                     # display the input digits
                     screen.blit(pass_digit_1_text, pass_digit_1_rect)
