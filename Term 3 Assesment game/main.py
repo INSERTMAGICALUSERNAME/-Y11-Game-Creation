@@ -17,7 +17,7 @@ class Player (pygame.sprite.Sprite):
         self.player_image = pygame.image.load("images/player_green.png").convert_alpha()
 
         self.image = self.player_image
-        self.rect =  self.player_image.get_rect(midbottom = (600,400))
+        self.rect =  self.player_image.get_rect(midbottom = (600,570))
 
 
         self.gravity = 0 
@@ -25,8 +25,8 @@ class Player (pygame.sprite.Sprite):
     def apply_gravity(self):
         self.gravity += 1
         self.rect.y += self.gravity
-        if self.rect.y >= 400:
-            self.rect.y = 400
+        if self.rect.y >= 470:
+            self.rect.y = 470
         if self.rect.x < 0:
             self.rect.x = 0
         if self.rect.x > 1130:
@@ -39,20 +39,20 @@ class Player (pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
         # jump
         if keys[pygame.K_SPACE] or keys[pygame.K_w] or keys[pygame.K_UP]:
-            if self.rect.y >= 400:
+            if self.rect.y >= 470:
                 self.gravity = -20
 
 
         # moving right
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            if self.rect.y == 400:
+            if self.rect.y == 470:
                 self.rect.x += 5
             # if the player is jumping they go faster
             else:
                 self.rect.x += 8
         # moving left
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            if self.rect.y == 400:
+            if self.rect.y == 470:
                 self.rect.x -= 5
             # if the player is jumping they go faster
             else:
@@ -138,6 +138,8 @@ class Button(pygame.sprite.Sprite):
             self.y_pos = 464
         
         
+            
+        
     
         # self.image = pygame.transform.scale(self.image,(360,65))
         self.rect = self.image.get_rect(center = (self.x_pos, self.y_pos))
@@ -166,8 +168,49 @@ class Button(pygame.sprite.Sprite):
     def update(self):
         self.draw(screen)
         self.check_click(pygame.mouse.get_pos())
+
+class Button_how(pygame.sprite.Sprite):
+    def __init__(self, type):
+        super().__init__()
+        self.type = type
+
+  
+        self.image = pygame.image.load("images/Wooden_plank.png").convert_alpha()
+        
+
+        self.x_pos = 600
+        if type == 'top_left':
+            self.y_pos = 70
+            self.x_pos = 190
+            self.image = pygame.transform.scale(self.image,(250,50))
+            
+        
         
     
+        # self.image = pygame.transform.scale(self.image,(360,65))
+        self.rect = self.image.get_rect(center = (self.x_pos, self.y_pos))
+
+    def check_click(self,mouse_pos,event):
+        clicked = None
+        if self.rect.collidepoint(mouse_pos):
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if plank.type == 'top_left':
+                    clicked = 1
+                
+        return clicked
+            
+        
+        
+        
+        
+            
+
+
+    
+    
+    def update(self):
+        self.draw(screen)
+        self.check_click(pygame.mouse.get_pos())
 
 
 # starts pygame
@@ -218,6 +261,19 @@ FPS = 60
 player =  pygame.sprite.GroupSingle()
 player.add(Player())
 
+top = 'top'
+middle = 'middle'
+bottom = 'bottom'
+
+button = pygame.sprite.Group()
+button.add(Button(top))
+button.add(Button(middle))
+button.add(Button(bottom))
+
+button_how = pygame.sprite.Group()
+button_how.add(Button_how('top_left'))
+
+
 
 #Compass and wind
 wind_strength = 0
@@ -252,7 +308,7 @@ hanging_sign = pygame.image.load("images/Hanging_Sign-removebg-preview.png").con
 hanging_sign = pygame.transform.scale(hanging_sign,(500,700))
 hanging_sign_rec = hanging_sign.get_rect(center = (600, 275))
 
-#blurb
+#text surfaces
 
 start_surf = pacific_font.render('START',True,("#342218"))
 start_surf = pygame.transform.scale(start_surf,(200,50))
@@ -268,14 +324,8 @@ quit_surf_rec = quit_surf.get_rect(midbottom = (600, 490))
 
 
 
-#buttons
-top = 'top'
-middle = 'middle'
-bottom = 'bottom'
-button = pygame.sprite.Group()
-button.add(Button(top))
-button.add(Button(middle))
-button.add(Button(bottom))
+
+
 
 
 
@@ -296,6 +346,9 @@ compass_bar = pygame.image.load("images/Compass_bar.png").convert_alpha()
 compass_bar = pygame.transform.scale2x(compass_bar)
 compass_bar_rect = compass_bar.get_rect(center = (1100,100))
 
+boat_surf = pygame.image.load("images/pixel_boat.png").convert_alpha()
+boat_surf= pygame.transform.scale(boat_surf,(1200,675))
+boat_rect = boat_surf.get_rect(center = (600, 375))
 
 
 
@@ -304,7 +357,6 @@ breakage_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(breakage_timer,2500)
  
 while True:
-
     
     for event in pygame.event.get():
         # Closes the game if you click close
@@ -324,7 +376,14 @@ while True:
                 if type_button_clicked == 3:
                     pygame.quit()
                     exit()
-            
+        
+        if game_state == 3:
+            for plank in button_how:
+                mouse_pos = pygame.mouse.get_pos()
+                type_button_clicked = plank.check_click(mouse_pos,event)
+                if type_button_clicked == 1:
+                    game_state = 2
+        
             
 
 
@@ -334,7 +393,7 @@ while True:
 
         # if the game is in the main gameplay state
         if game_state == 1:
-
+            
             # Breakages spawning. Gets a random item from a list. adds it to the breakages sprite class, removes from current list and than put on another list. 
             if event.type == breakage_timer:
                 if breakage_type_eligible_list:
@@ -402,7 +461,8 @@ while True:
     #main gameplay
     if game_state == 1:
         screen.blit(background_surf,(0,0))
-
+        screen.blit(boat_surf, boat_rect)
+        
         #compass and wind
         if wind_right:
             
@@ -592,6 +652,9 @@ while True:
         screen.blit(background_surf,(0,0))
         pygame.draw.rect(screen,"#673506FF",(50,25,1100,625))
         pygame.draw.rect(screen,"#2C2C2CCC",(50,25,1100,625),10,2)
+        button_how.draw(screen)
+        
+           
 
    
     pygame.display.update()
