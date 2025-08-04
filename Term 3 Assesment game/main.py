@@ -52,6 +52,7 @@ class Player (pygame.sprite.Sprite):
         
         self.gravity += 1
         self.rect.y += self.gravity
+
         
         # makes the player stay in the play area 
         if self.rect.y >= 470:
@@ -62,17 +63,20 @@ class Player (pygame.sprite.Sprite):
         if self.rect.right > 1030:
             self.rect.right = 1030
 
+
     
     # player left and right movement
     def player_movement(self):
 
         # get keys pressed
         keys = pygame.key.get_pressed()
+
         # moving right
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             if self.rect.y == 470:
                 self.rect.x += 5
             elif self.rect.colliderect(raised_deck):
+
                 self.rect.x += 5
             # if the player is jumping they go faster
             else:
@@ -80,8 +84,10 @@ class Player (pygame.sprite.Sprite):
         # moving left
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             if self.rect.y == 470:
+
                 self.rect.x -= 5
             elif self.rect.colliderect(raised_deck):
+
                 self.rect.x -= 5
             # if the player is jumping they go faster
             else:
@@ -170,6 +176,8 @@ class Button(pygame.sprite.Sprite):
         if type == 'bottom':
             self.y_pos = 464
         
+        
+            
         
     
         # self.image = pygame.transform.scale(self.image,(360,65))
@@ -272,8 +280,55 @@ class Game_over_buttons(pygame.sprite.Sprite):
         
 
 
-        
+
     
+    
+    def update(self):
+        self.draw(screen)
+        self.check_click(pygame.mouse.get_pos())
+
+class Button_how(pygame.sprite.Sprite):
+    def __init__(self, type):
+        super().__init__()
+        self.type = type
+
+  
+        self.image = pygame.image.load("images/Wooden_plank.png").convert_alpha()
+        
+
+        self.x_pos = 600
+        if type == 'top_left':
+            self.y_pos = 70
+            self.x_pos = 190
+            self.image = pygame.transform.scale(self.image,(250,50))
+            
+        
+
+    
+        # self.image = pygame.transform.scale(self.image,(360,65))
+        self.rect = self.image.get_rect(center = (self.x_pos, self.y_pos))
+
+    def check_click(self,mouse_pos,event):
+        clicked = None
+        if self.rect.collidepoint(mouse_pos):
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if plank.type == 'top_left':
+                    clicked = 1
+                
+        return clicked
+            
+        
+        
+        
+        
+            
+
+
+    
+    
+    def update(self):
+        self.draw(screen)
+        self.check_click(pygame.mouse.get_pos())
 
 
 # pygame set up code
@@ -312,15 +367,18 @@ fixing = False
 player =  pygame.sprite.GroupSingle()
 player.add(Player())
 
+
 #buttons
 top = 'top'
 middle = 'middle'
 bottom = 'bottom'
 # home screen buttons
+
 button = pygame.sprite.Group()
 button.add(Button(top))
 button.add(Button(middle))
 button.add(Button(bottom))
+
 
 # game over screen buttons
 game_over_button = pygame.sprite.Group()
@@ -329,6 +387,12 @@ game_over_button.add(Game_over_buttons(bottom))
 
 # breakage group
 breakage = pygame.sprite.Group()
+
+button_how = pygame.sprite.Group()
+button_how.add(Button_how('top_left'))
+
+
+
 
 #Compass and wind
 wind_strength = 0
@@ -353,7 +417,9 @@ hanging_sign = pygame.image.load("images/Hanging_Sign-removebg-preview.png").con
 hanging_sign = pygame.transform.scale(hanging_sign,(500,700))
 hanging_sign_rec = hanging_sign.get_rect(center = (600, 275))
 
+
 #title screen text
+
 
 start_surf = pacific_font.render('START',True,("#342218"))
 start_surf = pygame.transform.scale(start_surf,(200,50))
@@ -368,7 +434,9 @@ quit_surf = pygame.transform.scale(quit_surf,(200,50))
 quit_surf_rec = quit_surf.get_rect(midbottom = (600, 490))
 
 
+
 #breakages spawning lists
+
 breakage_type_eligible_list = ['sail', 'bow', 'floor_board', 'rope']
 breakage_type_ineligible_list = []
 
@@ -389,6 +457,7 @@ hide_compass_direction_right_rect = hide_compass_direction_right_surf.get_rect(t
 compass_bar = pygame.image.load("images/Compass_bar.png").convert_alpha()
 compass_bar = pygame.transform.scale2x(compass_bar)
 compass_bar_rect = compass_bar.get_rect(center = (1100,100))
+
 
 # ship damage
 ship_damage = 0
@@ -411,6 +480,7 @@ raised_deck = pygame.Rect(310, 530, 510, 20)
 
 
 
+
 # clocks
 breakage_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(breakage_timer,5000)
@@ -419,8 +489,6 @@ damage_timer = pygame.USEREVENT + 2
 pygame.time.set_timer(damage_timer,200)
  
 while True:
-    
-
 
     
     for event in pygame.event.get():
@@ -441,11 +509,20 @@ while True:
                 if type_button_clicked == 3:
                     pygame.quit()
                     exit()
-            
+
+        
+        if game_state == 3:
+            for plank in button_how:
+                mouse_pos = pygame.mouse.get_pos()
+                type_button_clicked = plank.check_click(mouse_pos,event)
+                if type_button_clicked == 1:
+                    game_state = 2
+        
+           
 
         # if the game is in the main gameplay state
         if game_state == 1:
-
+            
             # Breakages spawning. Gets a random item from a list. adds it to the breakages sprite class, removes from current list and than put on another list. 
             if event.type == breakage_timer:
                 if breakage_type_eligible_list:
@@ -541,8 +618,10 @@ while True:
     if game_state == 1:
         pygame.draw.rect(screen, (0,0,255), raised_deck)
         screen.blit(background_surf,(0,0))
+
         screen.blit(boat_surf,boat_rect)
         
+
 
         
         #compass and wind
@@ -757,12 +836,15 @@ while True:
         screen.blit(background_surf,(0,0))
         pygame.draw.rect(screen,"#673506FF",(50,25,1100,625))
         pygame.draw.rect(screen,"#2C2C2CCC",(50,25,1100,625),10,2)
+        button_how.draw(screen)
+
     if game_state == 4:
         screen.blit(background_surf,(0,0))
         game_over_button.draw(screen)
         game_over_button.update()
        
         
+
 
    
     pygame.display.update()
