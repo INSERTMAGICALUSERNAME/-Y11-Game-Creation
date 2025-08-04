@@ -94,6 +94,8 @@ class Player (pygame.sprite.Sprite):
         self.player_movement()
         global player_x_pos
         player_x_pos = self.rect.x
+        if game_state == 4:
+            self.rect.midbottom = (600, 570)
         
 
 class Breakage(pygame.sprite.Sprite):
@@ -303,6 +305,7 @@ wrong_text = 0
 fixing = False
 
 
+
 # Groups
 
 #player group
@@ -387,8 +390,18 @@ compass_bar = pygame.image.load("images/Compass_bar.png").convert_alpha()
 compass_bar = pygame.transform.scale2x(compass_bar)
 compass_bar_rect = compass_bar.get_rect(center = (1100,100))
 
+# ship damage
+ship_damage = 0
+
+ship_damage_meter_surf = pygame.image.load("images/damage_bar.xcf").convert_alpha()
+ship_damage_meter_surf = pygame.transform.scale2x(ship_damage_meter_surf)
+ship_damage_meter_surf = pygame.transform.rotate(ship_damage_meter_surf, 90)
+ship_damage_meter_rect = ship_damage_meter_surf.get_rect(topleft=(50,82))
+
+
+
 # ship 
-boat_surf = pygame.image.load("images/pixel_boat.png").convert_alpha()
+boat_surf = pygame.image.load("images/pixel_boat_fixed_boarder_real.xcf").convert_alpha()
 boat_surf= pygame.transform.scale(boat_surf,(1200,675))
 boat_rect = boat_surf.get_rect(center = (600, 375))
 
@@ -401,6 +414,9 @@ raised_deck = pygame.Rect(310, 530, 510, 20)
 # clocks
 breakage_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(breakage_timer,5000)
+
+damage_timer = pygame.USEREVENT + 2
+pygame.time.set_timer(damage_timer,200)
  
 while True:
     
@@ -437,6 +453,26 @@ while True:
                     breakage.add(Breakage(removed_breakage))
                     breakage_type_eligible_list.remove(removed_breakage)
                     breakage_type_ineligible_list.append(removed_breakage) # might not be needed for use laster
+
+
+            if event.type == damage_timer:
+                breakage_count = len(breakage_type_ineligible_list)
+                
+                if breakage_count <=0:
+                    None
+                elif breakage_count  <=1:
+                    ship_damage +=1
+                elif breakage_count  <=2:
+                    ship_damage +=2
+                elif breakage_count  <=3:
+                    ship_damage +=3.5
+                elif breakage_count  <=4:
+                    ship_damage += 5
+
+
+            
+
+
 
             # if user presses 'f' key, it will set fixing to True, allowing the player to input digits.
             # if user presses 'r' key, it will set fixing to False, resetting the input digits to None.
@@ -547,6 +583,15 @@ while True:
 
         screen.blit(hide_compass_direction_right_surf,hide_compass_direction_right_rect)
         screen.blit(hide_compass_direction_left_surf,hide_compass_direction_left_rect)
+
+
+        # draws ship_damage_indecator_height based on ship_damage
+        ship_damage_indecator_height = ship_damage/1.7857142857142858 + 5
+        ship_damage_indecator_left_top_y = 232 - ship_damage_indecator_height
+        pygame.draw.rect(screen,(0,0,255), (55,ship_damage_indecator_left_top_y,25,ship_damage_indecator_height ))
+        screen.blit(ship_damage_meter_surf,ship_damage_meter_rect )
+        
+        
         
 
 
@@ -664,6 +709,19 @@ while True:
                     input_digit_1 = None
                     input_digit_2 = None
                     input_digit_3 = None
+
+        if ship_damage >= 250:
+            for b in breakage:
+                b.kill()
+            ship_damage = 0 
+            wind_strength = 0 
+            breakage_type_eligible_list = ['sail', 'bow', 'floor_board', 'rope']
+            breakage_type_ineligible_list = []
+
+            game_state = 4
+
+
+
 
             
                         
