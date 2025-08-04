@@ -23,10 +23,13 @@ class Player (pygame.sprite.Sprite):
 
         self.gravity = 0 
     # player jump. and player collitions with sides of player area and raised deck
-    def apply_gravity(self):
+    def apply_gravity_and_jump(self):
 
         keys = pygame.key.get_pressed()
-        # jump
+        
+        # if the user click the jump button while the player is touching the groung then gravity will be set to -20. 
+        # else if the player is touching the the raised floor than there gravity is set to zero. 
+
         if keys[pygame.K_LSHIFT]:
             if self.rect.colliderect(raised_deck):
                 self.gravity = 5
@@ -50,7 +53,7 @@ class Player (pygame.sprite.Sprite):
         self.gravity += 1
         self.rect.y += self.gravity
         
-
+        # makes the player stay in the play area 
         if self.rect.y >= 470:
             self.rect.y = 470
 
@@ -60,14 +63,11 @@ class Player (pygame.sprite.Sprite):
             self.rect.right = 1030
 
     
-        # player movment
-    def player_imput(self):
+    # player left and right movement
+    def player_movement(self):
+
         # get keys pressed
         keys = pygame.key.get_pressed()
-        
-        
-
-
         # moving right
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             if self.rect.y == 470:
@@ -86,10 +86,12 @@ class Player (pygame.sprite.Sprite):
             # if the player is jumping they go faster
             else:
                 self.rect.x -= 8
+
+
     # calls of the defs for the class
     def update(self):
-        self.apply_gravity()
-        self.player_imput()
+        self.apply_gravity_and_jump()
+        self.player_movement()
         global player_x_pos
         player_x_pos = self.rect.x
         
@@ -222,10 +224,35 @@ class Game_over_buttons(pygame.sprite.Sprite):
                 if self.object_type == 'bottom':
                     clicked = 2     
         return clicked
+    
+    def check_hover(self):
+    # if the mouse is hovering over the game over buttom the text will change colour
+        if self.object_type == "top":
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.restart_game_over_surf = pacific_font.render('RESTART',True,("#A9FFF8"))
+                self.restart_game_over_surf = pygame.transform.scale(self.restart_game_over_surf,(200,50))
+            else: 
+                self.restart_game_over_surf = pacific_font.render('RESTART',True,("#342218"))
+                self.restart_game_over_surf = pygame.transform.scale(self.restart_game_over_surf,(200,50))
+
+
+        
+        if self.object_type == "bottom":
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.home_game_over_surf = pacific_font.render('HOME',True,("#A9FFF8"))
+                self.home_game_over_surf = pygame.transform.scale(self.home_game_over_surf,(200,50))
+            else:
+                self.home_game_over_surf = pacific_font.render('HOME',True,("#342218"))
+                self.home_game_over_surf = pygame.transform.scale(self.home_game_over_surf,(200,50))
+        
+      
+
+
         
     def update(self):
         global game_state
-          
+
+        self.check_hover()
 
         clicked = self.check_click()
         if clicked == 1:
@@ -256,7 +283,7 @@ pixel_font = pygame.font.Font('Font/Pixeltype.ttf',50)
 clock = pygame.time.Clock()
 pygame.display.set_caption("Crossing the Deep")
 FPS = 60
-game_state = 2
+game_state = 4
 
 # set up passcode variables
 passcode = []
@@ -592,7 +619,7 @@ while True:
                     pass_digit_3_text = pacific_font.render(f"{pass_digit_3}", True, font_colour_3)
                     pass_digit_3_rect = pass_digit_3_text.get_rect(center = (700,615 ))
 
-                    # display the input digits
+                    
                     screen.blit(pass_digit_1_text, pass_digit_1_rect)
                     screen.blit(pass_digit_2_text, pass_digit_2_rect)
                     screen.blit(pass_digit_3_text, pass_digit_3_rect)
