@@ -283,9 +283,7 @@ class Game_over_buttons(pygame.sprite.Sprite):
 
     
     
-    def update(self):
-        self.draw(screen)
-        self.check_click(pygame.mouse.get_pos())
+    
 
 class Button_how(pygame.sprite.Sprite):
     def __init__(self, type):
