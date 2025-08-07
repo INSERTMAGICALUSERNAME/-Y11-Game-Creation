@@ -92,6 +92,17 @@ class Player (pygame.sprite.Sprite):
             # if the player is jumping they go faster
             else:
                 self.rect.x -= 8
+    
+    def bailing(self):
+        if not fixing and not changing:
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_r] or keys[pygame.K_KP_MINUS]:
+                ship_damage -= 2 
+                if ship_damage <= 0:
+                    ship_damage = 0
+
+
+
 
 
     # calls of the defs for the class
@@ -102,6 +113,7 @@ class Player (pygame.sprite.Sprite):
         player_x_pos = self.rect.x
         if game_state == 4:
             self.rect.midbottom = (600, 570)
+        # self.bailing()
         
 
 class Breakage(pygame.sprite.Sprite):
@@ -395,7 +407,7 @@ breakage_colide_type = None
 wrong_text = 0
 
 fixing = False
-
+changing = False
 
 
 # Groups
@@ -551,6 +563,17 @@ while True:
                     ship_damage +=3.5
                 elif breakage_count  <=4:
                     ship_damage += 5
+                
+                if not fixing and not changing and player.sprite.rect.y == 470:
+                    keys = pygame.key.get_pressed()
+                    if keys[pygame.K_r] or keys[pygame.K_KP_MINUS]:
+                        ship_damage -= 3
+                        print("going down")
+                        if ship_damage <= 0:
+                            ship_damage = 0
+
+            
+
 
 
             
