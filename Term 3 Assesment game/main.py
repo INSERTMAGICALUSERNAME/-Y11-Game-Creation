@@ -189,13 +189,13 @@ class Main_buttons(pygame.sprite.Sprite):
 
     def check_click(self):
         clicked = None
-        if self.rect.collidepoint(pygame.mouse.get_pos()):
+        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_2_timer > 5:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if  self.object_type == 'top':
                     clicked = 1
-                if self.object_type == 'middle':
+                elif self.object_type == 'middle':
                     clicked = 2
-                if self.object_type == 'bottom':
+                elif self.object_type == 'bottom':
                     clicked = 3     
         return clicked
     
@@ -235,14 +235,17 @@ class Main_buttons(pygame.sprite.Sprite):
 
         self.check_hover()
 
+        
         clicked = self.check_click()
         if clicked == 1:
             game_state = 1 
         if clicked == 2:
             game_state = 3
         if clicked == 3:
+
             pygame.quit()
             exit()
+        
 
         if self.object_type == 'top':
             self.main_start_rect = self.main_start_surf.get_rect(center = (600, self.y_pos))
@@ -277,7 +280,7 @@ class Game_over_buttons(pygame.sprite.Sprite):
 
     def check_click(self):
         clicked = None
-        if self.rect.collidepoint(pygame.mouse.get_pos()):
+        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_4_timer > 5:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if  self.object_type == 'top':
                     clicked = 1
@@ -315,11 +318,15 @@ class Game_over_buttons(pygame.sprite.Sprite):
 
         self.check_hover()
 
+        
         clicked = self.check_click()
         if clicked == 1:
-            game_state = 1 
+            game_state = 1
+            
         if clicked == 2:
             game_state = 2
+            
+        
 
         if self.object_type == 'top':
             restart_surf_rect = self.restart_game_over_surf.get_rect(center = (600, self.y_pos))
@@ -389,7 +396,9 @@ pixel_font = pygame.font.Font('Font/Pixeltype.ttf',50)
 clock = pygame.time.Clock()
 pygame.display.set_caption("Crossing the Deep")
 FPS = 60
-game_state = 2
+game_state = 4
+game_state_2_timer = 0
+game_state_4_timer = 0
 
 # set up passcode variables
 passcode = []
@@ -564,8 +573,10 @@ while True:
                 elif breakage_count  <=4:
                     ship_damage += 5
                 
-                if not fixing and not changing and player.sprite.rect.y == 470:
-                    keys = pygame.key.get_pressed()
+
+                keys = pygame.key.get_pressed()
+                if not fixing and not changing and player.sprite.rect.y == 470 and not keys[pygame.K_a] and not keys[pygame.K_d] and not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
+                   
                     if keys[pygame.K_r] or keys[pygame.K_KP_MINUS]:
                         ship_damage -= 3
                         print("going down")
@@ -842,7 +853,9 @@ while True:
         
         #title and game over screen
     if game_state == 2:
-        
+        main_button.add(Main_buttons(top))
+        main_button.add(Main_buttons(middle))
+        main_button.add(Main_buttons(bottom))
 
         screen.blit(background_surf,(0,0))
 
@@ -858,23 +871,31 @@ while True:
         
         main_button.draw(screen)
         main_button.update()
-
+        game_state_2_timer +=1 
         
         # button.update()
+    else:
+        for b in main_button:
+            b.kill()
+            print('killed Button')
+        game_state_2_timer = 0
         
-        
+      
        
     if game_state == 3:
-
+        
         screen.blit(background_surf,(0,0))
         pygame.draw.rect(screen,"#673506FF",(50,25,1100,625))
         pygame.draw.rect(screen,"#2C2C2CCC",(50,25,1100,625),10,2)
         button_how.draw(screen)
 
     if game_state == 4:
+        game_state_4_timer += 1
         screen.blit(background_surf,(0,0))
         game_over_button.draw(screen)
         game_over_button.update()
+    else:
+        game_state_4_timer = 0
        
         
 
@@ -883,4 +904,5 @@ while True:
     pygame.display.update()
     
     # While loop can only run at FPS speed per second. 
+    print(game_state_4_timer)
     clock.tick(FPS)
