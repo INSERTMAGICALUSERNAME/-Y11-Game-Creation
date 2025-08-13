@@ -289,7 +289,7 @@ class Game_over_buttons(pygame.sprite.Sprite):
         return clicked
     
     def check_hover(self):
-        
+          
     # if the mouse is hovering over the game over buttom the text will change colour
         if self.object_type == "top":
             if self.rect.collidepoint(pygame.mouse.get_pos()):
@@ -579,7 +579,6 @@ while True:
                    
                     if keys[pygame.K_r] or keys[pygame.K_KP_MINUS]:
                         ship_damage -= 3
-                        print("going down")
                         if ship_damage <= 0:
                             ship_damage = 0
 
@@ -853,9 +852,6 @@ while True:
         
         #title and game over screen
     if game_state == 2:
-        main_button.add(Main_buttons(top))
-        main_button.add(Main_buttons(middle))
-        main_button.add(Main_buttons(bottom))
 
         screen.blit(background_surf,(0,0))
 
@@ -874,10 +870,7 @@ while True:
         game_state_2_timer +=1 
         
         # button.update()
-    else:
-        for b in main_button:
-            b.kill()
-            print('killed Button')
+    else:   
         game_state_2_timer = 0
         
       
@@ -904,5 +897,4 @@ while True:
     pygame.display.update()
     
     # While loop can only run at FPS speed per second. 
-    print(game_state_4_timer)
     clock.tick(FPS)
