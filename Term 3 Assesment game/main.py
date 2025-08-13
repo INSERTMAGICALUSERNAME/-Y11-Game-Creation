@@ -30,7 +30,9 @@ class Player (pygame.sprite.Sprite):
         # if the user click the jump button while the player is touching the groung then gravity will be set to -20. 
         # else if the player is touching the the raised floor than there gravity is set to zero. 
 
-        if keys[pygame.K_s] or keys[pygame.K_DOWN]:
+
+        if keys[pygame.K_LSHIFT] or keys[pygame.K_s] or keys[pygame.K_DOWN]:
+
             if self.rect.colliderect(raised_deck):
                 self.gravity = 5
         elif keys[pygame.K_SPACE] or keys[pygame.K_w] or keys[pygame.K_UP]:
@@ -92,6 +94,17 @@ class Player (pygame.sprite.Sprite):
             # if the player is jumping they go faster
             else:
                 self.rect.x -= 8
+    
+    def bailing(self):
+        if not fixing and not changing:
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_r] or keys[pygame.K_KP_MINUS]:
+                ship_damage -= 2 
+                if ship_damage <= 0:
+                    ship_damage = 0
+
+
+
 
 
     # calls of the defs for the class
@@ -102,6 +115,7 @@ class Player (pygame.sprite.Sprite):
         player_x_pos = self.rect.x
         if game_state == 4:
             self.rect.midbottom = (600, 570)
+        # self.bailing()
         
 
 class Breakage(pygame.sprite.Sprite):
@@ -155,62 +169,103 @@ class Breakage(pygame.sprite.Sprite):
                 return [b.pass_1, b.pass_2, b.pass_3]
 
               
-class Button(pygame.sprite.Sprite):
+class Main_buttons(pygame.sprite.Sprite):
     def __init__(self, type):
         super().__init__()
-        self.type = type
+        self.object_type = type
 
-        
-
-  
         self.image = pygame.image.load("images/Wooden_plank.png").convert_alpha()
-        
-
         self.x_pos = 600
         if type == 'top':
-            self.y_pos = 280
-            
-        if type == 'middle':
+            self.y_pos = 278
+        if type == "middle":
             self.y_pos = 372
-            
-        if type == 'bottom':
-            self.y_pos = 464
+        if type == "bottom":
+            self.y_pos = 466
         
-        
-            
-        
-    
-        # self.image = pygame.transform.scale(self.image,(360,65))
-        self.rect = self.image.get_rect(center = (self.x_pos, self.y_pos))
 
 
-    def check_click(self,mouse_pos,event):
+
+
+        self.rect = self.image.get_rect(center = (self.x_pos,self.y_pos))
+
+    def check_click(self):
         clicked = None
-        if self.rect.collidepoint(mouse_pos):
+        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_2_timer > 5:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if plank.type == 'top':
+                if  self.object_type == 'top':
                     clicked = 1
-                if plank.type == 'middle':
+                elif self.object_type == 'middle':
                     clicked = 2
-                if plank.type == 'bottom':
-                    clicked = 3       
-        return clicked 
-
-    def update(self):
-        self.draw(screen)
-        self.check_click(pygame.mouse.get_pos())
+                elif self.object_type == 'bottom':
+                    clicked = 3     
+        return clicked
     
+    def check_hover(self):
+        
+    # if the mouse is hovering over the game over buttom the text will change colour
+        if self.object_type == "top":
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.main_start_surf= pacific_font.render('START',True,("#A9FFF8"))
+                self.main_start_surf = pygame.transform.scale(self.main_start_surf,(200,50))
+            else: 
+                self.main_start_surf = pacific_font.render('START',True,("#342218"))
+                self.main_start_surf = pygame.transform.scale(self.main_start_surf,(200,50))
+
+        if self.object_type == "middle":
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.main_help_surf = pacific_font.render('HOW TO PLAY',True,("#A9FFF8"))
+                self.main_help_surf = pygame.transform.scale(self.main_help_surf,(200,50))
+            else: 
+                self.main_help_surf = pacific_font.render('HOW TO PLAY',True,("#342218"))
+                self.main_help_surf = pygame.transform.scale(self.main_help_surf,(200,50))
+
+
+        
+        if self.object_type == "bottom":
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.main_quit_surf = pacific_font.render('QUIT',True,("#A9FFF8"))
+                self.main_quit_surf = pygame.transform.scale(self.main_quit_surf,(200,50))
+            else:
+                self.main_quit_surf = pacific_font.render('QUIT',True,("#342218"))
+                self.main_quit_surf = pygame.transform.scale(self.main_quit_surf,(200,50))
+        
+
+        
+    def update(self):
+        global game_state
+
+        self.check_hover()
+
+        
+        clicked = self.check_click()
+        if clicked == 1:
+            game_state = 1 
+        if clicked == 2:
+            game_state = 3
+        if clicked == 3:
+
+            pygame.quit()
+            exit()
+        
+
+        if self.object_type == 'top':
+            self.main_start_rect = self.main_start_surf.get_rect(center = (600, self.y_pos))
+            screen.blit(self.main_start_surf,self.main_start_rect)
+
+        if self.object_type == 'middle':
+             self.main_help_rect = self.main_help_surf.get_rect(center = (600, self.y_pos))
+             screen.blit(self.main_help_surf,self.main_help_rect )
+
+        if self.object_type == 'bottom':
+            self.main_quit_rect = self.main_quit_surf.get_rect(center = (600, self.y_pos))
+            screen.blit(self.main_quit_surf,self.main_quit_rect)
+           
 
 class Game_over_buttons(pygame.sprite.Sprite):
     def __init__(self, type):
         super().__init__()
         self.object_type = type
-
-        self.restart_game_over_surf = pacific_font.render('RESTART',True,("#342218"))
-        self.restart_game_over_surf = pygame.transform.scale(self.restart_game_over_surf,(200,50))
-
-        self.home_game_over_surf = pacific_font.render('HOME',True,("#342218"))
-        self.home_game_over_surf = pygame.transform.scale(self.home_game_over_surf,(200,50))
 
         self.image = pygame.image.load("images/Wooden_plank.png").convert_alpha()
         self.x_pos = 600
@@ -227,7 +282,7 @@ class Game_over_buttons(pygame.sprite.Sprite):
 
     def check_click(self):
         clicked = None
-        if self.rect.collidepoint(pygame.mouse.get_pos()):
+        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_4_timer > 5:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if  self.object_type == 'top':
                     clicked = 1
@@ -236,6 +291,7 @@ class Game_over_buttons(pygame.sprite.Sprite):
         return clicked
     
     def check_hover(self):
+          
     # if the mouse is hovering over the game over buttom the text will change colour
         if self.object_type == "top":
             if self.rect.collidepoint(pygame.mouse.get_pos()):
@@ -264,11 +320,15 @@ class Game_over_buttons(pygame.sprite.Sprite):
 
         self.check_hover()
 
+        
         clicked = self.check_click()
         if clicked == 1:
-            game_state = 1 
+            game_state = 1
+            
         if clicked == 2:
             game_state = 2
+            
+        
 
         if self.object_type == 'top':
             restart_surf_rect = self.restart_game_over_surf.get_rect(center = (600, self.y_pos))
@@ -277,7 +337,7 @@ class Game_over_buttons(pygame.sprite.Sprite):
         if self.object_type == 'bottom':
             home_game_over_rect = self.home_game_over_surf.get_rect(center = (600, self.y_pos))
             screen.blit(self.home_game_over_surf, home_game_over_rect)
- 
+
 
 class Button_how(pygame.sprite.Sprite):
     def __init__(self, type):
@@ -293,6 +353,9 @@ class Button_how(pygame.sprite.Sprite):
             self.y_pos = 70
             self.x_pos = 190
             self.image = pygame.transform.scale(self.image,(250,50))
+
+      
+       
             
         
 
@@ -304,7 +367,7 @@ class Button_how(pygame.sprite.Sprite):
         clicked = None
         if self.rect.collidepoint(mouse_pos):
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if plank.type == 'top_left':
+                if self.type == 'top_left':
                     clicked = 1
                 
         return clicked
@@ -343,9 +406,13 @@ pacific_font = pygame.font.Font('Font/Pacifico-regular.ttf',75)
 pixel_font = pygame.font.Font('Font/Pixeltype.ttf',50)
 clock = pygame.time.Clock()
 pygame.display.set_caption("Crossing the Deep")
-FPS = 300
+
+FPS = 60
+game_state_2_timer = 0
+game_state_4_timer = 0
 game_state = 2 # 1 = main gameplay, 2 = title screen, 3 = how to play screen, 4 = game over screen
 score = 0
+
 
 # set up passcode variables
 passcode = []
@@ -359,14 +426,12 @@ input_digit_2 = None
 input_digit_3 = None
 
 breakage_colide_type = None
-
 wrong_text = 0
-
 fixing = False
 changing= False
 outline = False
-
 wind_score_weight = 0
+
 # Groups
 
 #player group
@@ -375,15 +440,16 @@ player.add(Player())
 
 
 #buttons
+
+# home screen buttons
 top = 'top'
 middle = 'middle'
 bottom = 'bottom'
-# home screen buttons
 
-button = pygame.sprite.Group()
-button.add(Button(top))
-button.add(Button(middle))
-button.add(Button(bottom))
+main_button = pygame.sprite.Group()
+main_button.add(Main_buttons(top))
+main_button.add(Main_buttons(middle))
+main_button.add(Main_buttons(bottom))
 
 
 # game over screen buttons
@@ -426,17 +492,7 @@ hanging_sign_rec = hanging_sign.get_rect(center = (600, 275))
 #title screen text
 
 
-start_surf = pacific_font.render('START',True,("#342218"))
-start_surf = pygame.transform.scale(start_surf,(200,50))
-start_surf_rec = start_surf.get_rect(midbottom = (600, 305))
 
-how_surf = pacific_font.render('How To Play',True,("#342218"))
-how_surf = pygame.transform.scale(how_surf,(200,50))
-how_surf_rec = how_surf.get_rect(midbottom = (600, 400))
-
-quit_surf = pacific_font.render('QUIT',True,("#342218"))
-quit_surf = pygame.transform.scale(quit_surf,(200,50))
-quit_surf_rec = quit_surf.get_rect(midbottom = (600, 490))
 
 
 
@@ -510,21 +566,6 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit() # oposite of pygame.init()
             exit()
-
-
-        if game_state == 2:
-            for plank in button:
-                mouse_pos = pygame.mouse.get_pos()
-                type_button_clicked = plank.check_click(mouse_pos,event)
-                if type_button_clicked == 1:
-                    game_state = 1
-                    
-                if type_button_clicked == 2:
-                    game_state = 3
-                if type_button_clicked == 3:
-                    pygame.quit()
-                    exit()
-
         
         if game_state == 3:
             for plank in button_how:
@@ -534,6 +575,7 @@ while True:
                     game_state = 2
         
            
+
 
         # if the game is in the main gameplay state
         if game_state == 1:
@@ -579,6 +621,19 @@ while True:
                     
                 elif breakage_count  <=4:
                     None
+                
+
+                keys = pygame.key.get_pressed()
+                if not fixing and not changing and player.sprite.rect.y == 470 and not keys[pygame.K_a] and not keys[pygame.K_d] and not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
+                   
+                    if keys[pygame.K_r] or keys[pygame.K_KP_MINUS]:
+                        ship_damage -= 3
+                        if ship_damage <= 0:
+                            ship_damage = 0
+
+            
+
+
 
             
 
@@ -877,9 +932,6 @@ while True:
 
             
 
-
-
-            
                         
         # drawing the breakage
         breakage.draw(screen)
@@ -904,18 +956,27 @@ while True:
         
         screen.blit(title_surf,title_rec)
         screen.blit(hanging_sign,hanging_sign_rec)
-        button.draw(screen)
-        screen.blit(start_surf,start_surf_rec)
-        screen.blit(how_surf,how_surf_rec)
-        screen.blit(quit_surf,quit_surf_rec)
-    if game_state == 3:
 
+        
+        main_button.draw(screen)
+        main_button.update()
+        game_state_2_timer +=1 
+        
+        # button.update()
+    else:   
+        game_state_2_timer = 0
+        
+      
+       
+    if game_state == 3:
+        
         screen.blit(background_surf,(0,0))
         pygame.draw.rect(screen,"#673506FF",(50,25,1100,625))
         pygame.draw.rect(screen,"#2C2C2CCC",(50,25,1100,625),10,2)
         button_how.draw(screen)
 
     if game_state == 4:
+        game_state_4_timer += 1
         screen.blit(background_surf,(0,0))
         if lose:
             screen.blit(broken_boat_surf,broken_boat_rect)
@@ -923,6 +984,8 @@ while True:
         
         game_over_button.draw(screen)
         game_over_button.update()
+    else:
+        game_state_4_timer = 0
        
         
 
