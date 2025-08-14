@@ -10,7 +10,7 @@ import random
 
 # player class
 class Player (pygame.sprite.Sprite):
-    # inicailizes the class and sets thing like image, rect and gravity
+    # inicailizes the class and sets thing like image, rect and gravity. 
     def __init__(self):
         super().__init__()
         
@@ -94,17 +94,6 @@ class Player (pygame.sprite.Sprite):
             # if the player is jumping they go faster
             else:
                 self.rect.x -= 8
-    
-    def bailing(self):
-        if not fixing and not changing:
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_r] or keys[pygame.K_KP_MINUS]:
-                ship_damage -= 2 
-                if ship_damage <= 0:
-                    ship_damage = 0
-
-
-
 
 
     # calls of the defs for the class
@@ -119,6 +108,7 @@ class Player (pygame.sprite.Sprite):
         
 
 class Breakage(pygame.sprite.Sprite):
+    # inicailizes the class and sets thing like image and rect
     def __init__(self, type):
         super().__init__()
         self.type = type
@@ -170,6 +160,7 @@ class Breakage(pygame.sprite.Sprite):
 
               
 class Main_buttons(pygame.sprite.Sprite):
+    # inicailizes the class and sets thing like image and rect
     def __init__(self, type):
         super().__init__()
         self.object_type = type
@@ -189,6 +180,7 @@ class Main_buttons(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect(center = (self.x_pos,self.y_pos))
 
+    # checks if the user clicks on a button and return a result based on the button pressed
     def check_click(self):
         clicked = None
         if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_2_timer > 50:
@@ -201,8 +193,8 @@ class Main_buttons(pygame.sprite.Sprite):
                     clicked = 3     
         return clicked
     
+
     def check_hover(self):
-        
     # if the mouse is hovering over the game over buttom the text will change colour
         if self.object_type == "top":
             if self.rect.collidepoint(pygame.mouse.get_pos()):
@@ -237,7 +229,7 @@ class Main_buttons(pygame.sprite.Sprite):
 
         self.check_hover()
 
-        
+        # changes game mode based on which button was pressed. 
         clicked = self.check_click()
         if clicked == 1:
             game_state = 1 
@@ -248,7 +240,7 @@ class Main_buttons(pygame.sprite.Sprite):
             pygame.quit()
             exit()
         
-
+        # blits text on buttons
         if self.object_type == 'top':
             self.main_start_rect = self.main_start_surf.get_rect(center = (600, self.y_pos))
             screen.blit(self.main_start_surf,self.main_start_rect)
@@ -340,6 +332,7 @@ class Game_over_buttons(pygame.sprite.Sprite):
 
 
 class Button_how(pygame.sprite.Sprite):
+    # inicailizes the class and sets thing like image and rect
     def __init__(self, type):
         super().__init__()
         self.type = type
@@ -355,11 +348,6 @@ class Button_how(pygame.sprite.Sprite):
             self.image = pygame.transform.scale(self.image,(250,50))
 
       
-       
-            
-        
-
-    
         # self.image = pygame.transform.scale(self.image,(360,65))
         self.rect = self.image.get_rect(center = (self.x_pos, self.y_pos))
 
@@ -372,18 +360,13 @@ class Button_how(pygame.sprite.Sprite):
                 
         return clicked
             
-        
-        
-        
-        
-            
-
-
-    
     
     def update(self):
         self.draw(screen)
         self.check_click(pygame.mouse.get_pos())
+
+
+
 
 def display_score():
     global score
@@ -407,14 +390,30 @@ pixel_font = pygame.font.Font('Font/Pixeltype.ttf',50)
 clock = pygame.time.Clock()
 pygame.display.set_caption("Crossing the Deep")
 
-FPS = 300
+
+
+
+
+
+# variable set up
+FPS = 60
 game_state_2_timer = 0
 game_state_4_timer = 0
 game_state = 4 # 1 = main gameplay, 2 = title screen, 3 = how to play screen, 4 = game over screen
-score = 0
 
-win = True
-lose = False
+score = 0
+restart_screen_score = 0
+game_timer = 0 
+game_timer_score = 0
+
+win = False
+lose = True
+
+ship_damage = 0
+
+
+
+
 
 
 # set up passcode variables
@@ -434,6 +433,11 @@ fixing = False
 changing= False
 outline = False
 wind_score_weight = 0
+
+
+
+
+
 
 # Groups
 
@@ -469,6 +473,9 @@ button_how.add(Button_how('top_left'))
 
 
 
+
+
+
 #Compass and wind
 wind_strength = 0
 tilt = (920 + wind_strength)
@@ -479,6 +486,11 @@ if wind_direction == 0:
 if wind_direction == 1:
     wind_strength += 0.1
 tilt = (920 + wind_strength)
+
+
+
+
+
 
 #title screen
 title_surf = pacific_font.render('Pacific Pursuit', True,"#5fa8a9")
@@ -492,8 +504,6 @@ hanging_sign = pygame.transform.scale(hanging_sign,(500,700))
 hanging_sign_rec = hanging_sign.get_rect(center = (600, 275))
 
 
-#title screen text
-
 
 
 
@@ -504,11 +514,17 @@ hanging_sign_rec = hanging_sign.get_rect(center = (600, 275))
 breakage_type_eligible_list = ['sail', 'bow', 'floor_board', 'rope']
 breakage_type_ineligible_list = []
 
+
+
+
+
+
 # images
+# background
 background_surf = pygame.image.load("images/stormy_background(Medium).png").convert_alpha()
 # sunny_background_surf = pygame.image.load('images/new_sunny_background.png')
 
-
+# play
 dead_player_surf = pygame.image.load("images/player.png").convert_alpha()
 dead_player_surf = pygame.transform.scale(dead_player_surf, (50, 100))
 dead_player_rect = dead_player_surf.get_rect(midbottom = (1050,410))
@@ -536,9 +552,9 @@ score_bar_rect = score_bar.get_rect(topleft=(50,15))
 broken_boat_surf = pygame.image.load("images/broken_boat.png").convert_alpha()
 broken_boat_surf = pygame.transform.scale(broken_boat_surf,(1200,675))
 broken_boat_rect = broken_boat_surf.get_rect(center = (500, 475))
-# ship damage
-ship_damage = 0
 
+
+# ship damage
 ship_damage_meter_surf = pygame.image.load("images/damage_bar.xcf").convert_alpha()
 ship_damage_meter_surf = pygame.transform.scale2x(ship_damage_meter_surf)
 ship_damage_meter_surf = pygame.transform.rotate(ship_damage_meter_surf, 90)
@@ -555,22 +571,27 @@ boat_rect = boat_surf.get_rect(center = (600, 375))
 raised_deck = pygame.Rect(310, 530, 510, 20)
 rudder_rect = pygame.Rect(330, 450, 100, 50)
 
-# Game Over screen
-you_win_surf = pacific_font.render('You Win!',True,(255,0,0))
-you_win_surf = pygame.transform.scale(you_win_surf,(300,100))
-you_win_rect = you_win_surf.get_rect(center = (600,50))
 
-traveled_safly_surf = pacific_font.render('You Succsesfuly Traveled Throught the Storm',True,(255,0,0))
-traveled_safly_surf = pygame.transform.scale(traveled_safly_surf,(1000,50))
-traveled_safly_rect = traveled_safly_surf.get_rect(center = (600,150))
+# Game Over screen text
 
-you_lose_surf = pacific_font.render('You Win!',True,(255,0,0))
-you_lose_surf = pygame.transform.scale(you_lose_surf,(300,100))
-you_lose_rect = you_lose_surf.get_rect(center = (600,50))
+# you_win_surf = pacific_font.render('You Win!',True,(0,255,0))
+# you_win_surf = pygame.transform.scale(you_win_surf,(300,100))
+# you_win_rect = you_win_surf.get_rect(center = (600,50))
+
+traveled_safly_surf = pacific_font.render('You Succsesfuly Traveled Throught the Storm',True,(0,255,0))
+traveled_safly_surf = pygame.transform.scale(traveled_safly_surf,(1100,100))
+traveled_safly_rect = traveled_safly_surf.get_rect(center = (600,100))
+
+# you_lose_surf = pacific_font.render('You Win!',True,(255,0,0))
+# you_lose_surf = pygame.transform.scale(you_lose_surf,(300,100))
+# you_lose_rect = you_lose_surf.get_rect(center = (600,50))
 
 not_traveled_safly_surf = pacific_font.render('You Perished While Trying to Travel Through the Storm',True,(255,0,0))
-not_traveled_safly_surf = pygame.transform.scale(not_traveled_safly_surf,(1000,50))
-not_traveled_safly_rect = not_traveled_safly_surf.get_rect(center = (600,150))
+not_traveled_safly_surf = pygame.transform.scale(not_traveled_safly_surf,(1100,100))
+not_traveled_safly_rect = not_traveled_safly_surf.get_rect(center = (600,100))
+
+
+
 
 
 
@@ -581,6 +602,9 @@ pygame.time.set_timer(breakage_timer,5000)
 
 damage_timer = pygame.USEREVENT + 2
 pygame.time.set_timer(damage_timer,200)
+
+second_timer = pygame.USEREVENT + 3
+pygame.time.set_timer(second_timer,1000)
  
 while True:
 
@@ -612,41 +636,41 @@ while True:
                     breakage_type_eligible_list.remove(removed_breakage)
                     breakage_type_ineligible_list.append(removed_breakage) # might not be needed for use laster
 
-
+            # damage the ship based on the amount of breakages
             if event.type == damage_timer:
                 breakage_count = len(breakage_type_ineligible_list)
                 
-                # if breakage_count <=0:
-                #     None
-                # elif breakage_count  <=1:
-                #     ship_damage +=1
-                    
-                # elif breakage_count  <=2:
-                #     ship_damage +=2
-                    
-                # elif breakage_count  <=3:
-                #     ship_damage +=3.5
-                    
-                # elif breakage_count  <=4:
-                #     ship_damage += 5
-                
-
-                #DEBUG MODE
                 if breakage_count <=0:
                     None
                 elif breakage_count  <=1:
-                    None
+                    ship_damage +=1
                     
                 elif breakage_count  <=2:
-                    None
+                    ship_damage +=2
                     
                 elif breakage_count  <=3:
-                    None
+                    ship_damage +=3.5
                     
                 elif breakage_count  <=4:
-                    None
+                    ship_damage += 5
                 
 
+                # #DEBUG MODE
+                # if breakage_count <=0:
+                #     None
+                # elif breakage_count  <=1:
+                #     None
+                    
+                # elif breakage_count  <=2:
+                #     None
+                    
+                # elif breakage_count  <=3:
+                #     None
+                    
+                # elif breakage_count  <=4:
+                #     None
+                
+                # Reduces Ship Damage if player pressing 'r' or KP '-'
                 keys = pygame.key.get_pressed()
                 if not fixing and not changing and player.sprite.rect.y == 470 and not keys[pygame.K_a] and not keys[pygame.K_d] and not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
                    
@@ -655,13 +679,11 @@ while True:
                         if ship_damage <= 0:
                             ship_damage = 0
 
+            # increase timer by 1 every second
+            if event.type == second_timer:
+                game_timer +=1
+
             
-
-
-
-            
-
-
 
             # if user presses 'f' key, it will set fixing to True, allowing the player to input digits.
             # if user presses 'r' key, it will set fixing to False, resetting the input digits to None.
@@ -924,6 +946,8 @@ while True:
                     input_digit_2 = None
                     input_digit_3 = None
 
+
+        # end of game resets
         if ship_damage >= 250:
             for b in breakage:
                 b.kill()
@@ -944,6 +968,8 @@ while True:
             wind_strength = 0 
             restart_screen_score = score
             score = 0
+            game_timer_score = game_timer
+            game_timer = 0 
             breakage_type_eligible_list = ['sail', 'bow', 'floor_board', 'rope']
             breakage_type_ineligible_list = []
 
@@ -965,10 +991,10 @@ while True:
         player.update()
         player.draw(screen)
        
-            
+        
             
         
-        #title and game over screen
+        # home screen
     if game_state == 2:
 
         screen.blit(background_surf,(0,0))
@@ -987,12 +1013,12 @@ while True:
         main_button.update()
         game_state_2_timer +=1 
         
-        # button.update()
+       
     else:   
         game_state_2_timer = 0
         
       
-       
+    # help screen what is on screen
     if game_state == 3:
         
         screen.blit(background_surf,(0,0))
@@ -1000,23 +1026,66 @@ while True:
         pygame.draw.rect(screen,"#2C2C2CCC",(50,25,1100,625),10,2)
         button_how.draw(screen)
 
+    
     if game_state == 4:
         game_state_4_timer += 1
         
         if lose:
+            # get the scroe and make the text
+            player_score_surf = pacific_font.render(f'Distance Traveled: { int(restart_screen_score*5)}',True,(255,0,0))
+            player_score_surf = pygame.transform.scale(player_score_surf,(400,60))
+            player_score_rect = player_score_surf.get_rect(center = (600, 210))
+
             screen.blit(background_surf,(0,0))
             screen.blit(broken_boat_surf,broken_boat_rect)
             screen.blit(dead_player_surf, dead_player_rect)
-            screen.blit(you_lose_surf,you_lose_rect)
+
+
+            # Draw a dark grey transparent overlay over the whole screen
+            overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+            # Only cover the text area with the overlay
+            overlay.fill((0, 0, 0, 0))  # Fully transparent
+            overlay_rect = pygame.Rect(50, 50, 1100, 200)
+            # Add padding to the overlay rectangle
+            padding = -20
+            padded_rect = overlay_rect.inflate(-padding * 2, -padding * 2)
+            pygame.draw.rect(overlay, (30, 30, 40, 180), padded_rect)
+            screen.blit(overlay, (0, 0))
+            # screen.blit(you_win_surf, you_win_rect)
+            # Draw a navy blue outline around the padded overlay area
+            pygame.draw.rect(screen, (35, 41, 67), padded_rect,10)
+
+            screen.blit(player_score_surf, player_score_rect)
             screen.blit(not_traveled_safly_surf,not_traveled_safly_rect)
         
         if win:
+            time_score_surf = pacific_font.render(f'Time: {game_timer_score} Seconds',True,(0,255,0))
+            time_score_surf = pygame.transform.scale(time_score_surf,(400,60))
+            time_score_rect = time_score_surf.get_rect(center =(600, 210))
+
+            
             screen.blit(background_surf, (0,0))
             screen.blit(boat_surf,boat_rect)
             screen.blit(dead_player_surf, living_player_rect)
-            screen.blit(you_win_surf, you_win_rect)
+            
+            
+            # Draw a dark grey transparent overlay over the whole screen
+            overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+            
+            # Only cover the text area with the overlay
+            overlay.fill((0, 0, 0, 0))  # Fully transparent
+            overlay_rect = pygame.Rect(50, 50, 1100, 200)
+            # Add padding to the overlay rectangle
+            padding = -20
+            padded_rect = overlay_rect.inflate(-padding * 2, -padding * 2)
+            pygame.draw.rect(overlay, (30, 30, 40, 180), padded_rect)
+            screen.blit(overlay, (0, 0))
+            # screen.blit(you_win_surf, you_win_rect)
+            # Draw a navy blue outline around the padded overlay area
+            pygame.draw.rect(screen, (35, 41, 67), padded_rect,10)
+            
             screen.blit(traveled_safly_surf,traveled_safly_rect)
-
+            screen.blit(time_score_surf,time_score_rect)
 
         
         game_over_button.draw(screen)
