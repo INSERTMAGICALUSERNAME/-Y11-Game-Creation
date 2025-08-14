@@ -191,7 +191,7 @@ class Main_buttons(pygame.sprite.Sprite):
 
     def check_click(self):
         clicked = None
-        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_2_timer > 5:
+        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_2_timer > 50:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if  self.object_type == 'top':
                     clicked = 1
@@ -282,7 +282,7 @@ class Game_over_buttons(pygame.sprite.Sprite):
 
     def check_click(self):
         clicked = None
-        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_4_timer > 5:
+        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_4_timer > 50:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if  self.object_type == 'top':
                     clicked = 1
@@ -407,11 +407,14 @@ pixel_font = pygame.font.Font('Font/Pixeltype.ttf',50)
 clock = pygame.time.Clock()
 pygame.display.set_caption("Crossing the Deep")
 
-FPS = 60
+FPS = 300
 game_state_2_timer = 0
 game_state_4_timer = 0
-game_state = 2 # 1 = main gameplay, 2 = title screen, 3 = how to play screen, 4 = game over screen
+game_state = 4 # 1 = main gameplay, 2 = title screen, 3 = how to play screen, 4 = game over screen
 score = 0
+
+win = True
+lose = False
 
 
 # set up passcode variables
@@ -508,6 +511,8 @@ dead_player_surf = pygame.image.load("images/player.png").convert_alpha()
 dead_player_surf = pygame.transform.scale(dead_player_surf, (50, 100))
 dead_player_rect = dead_player_surf.get_rect(midbottom = (1050,410))
 
+living_player_rect = dead_player_surf.get_rect(midbottom = (900,570))
+
 # compass_direction surfs and rects
 compass_direction = pygame.image.load("images/compass_direction.png").convert_alpha()
 compass_direction = pygame.transform.scale2x(compass_direction)
@@ -547,6 +552,23 @@ boat_rect = boat_surf.get_rect(center = (600, 375))
 
 raised_deck = pygame.Rect(310, 530, 510, 20)
 rudder_rect = pygame.Rect(330, 450, 100, 50)
+
+# Game Over screen
+you_win_surf = pacific_font.render('You Win!',True,(255,0,0))
+you_win_surf = pygame.transform.scale(you_win_surf,(300,100))
+you_win_rect = you_win_surf.get_rect(center = (600,50))
+
+traveled_safly_surf = pacific_font.render('You Succsesfuly Traveled Throught the Storm',True,(255,0,0))
+traveled_safly_surf = pygame.transform.scale(traveled_safly_surf,(1000,50))
+traveled_safly_rect = traveled_safly_surf.get_rect(center = (600,150))
+
+you_lose_surf = pacific_font.render('You Win!',True,(255,0,0))
+you_lose_surf = pygame.transform.scale(you_lose_surf,(300,100))
+you_lose_rect = you_lose_surf.get_rect(center = (600,50))
+
+not_traveled_safly_surf = pacific_font.render('You Perished While Trying to Travel Through the Storm',True,(255,0,0))
+not_traveled_safly_surf = pygame.transform.scale(not_traveled_safly_surf,(1000,50))
+not_traveled_safly_rect = not_traveled_safly_surf.get_rect(center = (600,150))
 
 
 
@@ -905,10 +927,10 @@ while True:
                 b.kill()
             ship_damage = 0 
             wind_strength = 0 
+            restart_screen_score = score
             score = 0
             breakage_type_eligible_list = ['sail', 'bow', 'floor_board', 'rope']
             breakage_type_ineligible_list = []
-
             game_state = 4
             win = False
             lose = True
@@ -918,6 +940,7 @@ while True:
                 b.kill()
             ship_damage = 0 
             wind_strength = 0 
+            restart_screen_score = score
             score = 0
             breakage_type_eligible_list = ['sail', 'bow', 'floor_board', 'rope']
             breakage_type_ineligible_list = []
@@ -981,6 +1004,16 @@ while True:
         if lose:
             screen.blit(broken_boat_surf,broken_boat_rect)
             screen.blit(dead_player_surf, dead_player_rect)
+            screen.blit(you_lose_surf,you_lose_rect)
+            screen.blit(not_traveled_safly_surf,not_traveled_safly_rect)
+        
+        if win:
+            screen.blit(boat_surf,boat_rect)
+            screen.blit(dead_player_surf, living_player_rect)
+            screen.blit(you_win_surf, you_win_rect)
+            screen.blit(traveled_safly_surf,traveled_safly_rect)
+
+
         
         game_over_button.draw(screen)
         game_over_button.update()
