@@ -191,7 +191,7 @@ class Main_buttons(pygame.sprite.Sprite):
 
     def check_click(self):
         clicked = None
-        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_2_timer > 5:
+        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_2_timer > 50:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if  self.object_type == 'top':
                     clicked = 1
@@ -282,7 +282,7 @@ class Game_over_buttons(pygame.sprite.Sprite):
 
     def check_click(self):
         clicked = None
-        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_4_timer > 5:
+        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_4_timer > 50:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if  self.object_type == 'top':
                     clicked = 1
@@ -412,6 +412,8 @@ game_state_2_timer = 0
 game_state_4_timer = 0
 game_state = 2 # 1 = main gameplay, 2 = title screen, 3 = how to play screen, 4 = game over screen
 score = 0
+
+
 
 
 # set up passcode variables
