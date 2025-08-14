@@ -506,6 +506,8 @@ breakage_type_ineligible_list = []
 
 # images
 background_surf = pygame.image.load("images/stormy_background(Medium).png").convert_alpha()
+# sunny_background_surf = pygame.image.load('images/new_sunny_background.png')
+
 
 dead_player_surf = pygame.image.load("images/player.png").convert_alpha()
 dead_player_surf = pygame.transform.scale(dead_player_surf, (50, 100))
@@ -1000,14 +1002,16 @@ while True:
 
     if game_state == 4:
         game_state_4_timer += 1
-        screen.blit(background_surf,(0,0))
+        
         if lose:
+            screen.blit(background_surf,(0,0))
             screen.blit(broken_boat_surf,broken_boat_rect)
             screen.blit(dead_player_surf, dead_player_rect)
             screen.blit(you_lose_surf,you_lose_rect)
             screen.blit(not_traveled_safly_surf,not_traveled_safly_rect)
         
         if win:
+            screen.blit(background_surf, (0,0))
             screen.blit(boat_surf,boat_rect)
             screen.blit(dead_player_surf, living_player_rect)
             screen.blit(you_win_surf, you_win_rect)
