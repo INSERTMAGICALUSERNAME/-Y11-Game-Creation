@@ -167,30 +167,39 @@ class Main_buttons(pygame.sprite.Sprite):
 
         self.image = pygame.image.load("images/Wooden_plank.png").convert_alpha()
         self.x_pos = 600
-        if type == 'top':
+        if self.object_type == 'top' or self.object_type  == 'top_5':
             self.y_pos = 278
-        if type == "middle":
+        if self.object_type == "middle" or self.object_type == "middle_5":
             self.y_pos = 372
-        if type == "bottom":
+        if self.object_type == "bottom" or self.object_type == "bottom_5" :
             self.y_pos = 466
-        
-
-
 
 
         self.rect = self.image.get_rect(center = (self.x_pos,self.y_pos))
 
     # checks if the user clicks on a button and return a result based on the button pressed
     def check_click(self):
+        global difficalty
         clicked = None
-        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_2_timer > 50:
-            if event.type == pygame.MOUSEBUTTONDOWN:
+        if self.rect.collidepoint(pygame.mouse.get_pos()):
+            if event.type == pygame.MOUSEBUTTONDOWN and game_state_2_timer > 30:
                 if  self.object_type == 'top':
-                    clicked = 1
+                    clicked = 5
                 elif self.object_type == 'middle':
                     clicked = 2
                 elif self.object_type == 'bottom':
-                    clicked = 3     
+                    clicked = 3
+
+            elif event.type == pygame.MOUSEBUTTONDOWN and game_state_5_timer > 30:
+                if self.object_type == 'top_5':
+                    difficalty = 1
+                    clicked = 1
+                if self.object_type == 'middle_5':
+                    difficalty = 2
+                    clicked = 1
+                if self.object_type == 'bottom_5':
+                    difficalty = 3
+                    clicked = 1 
         return clicked
     
 
@@ -221,6 +230,33 @@ class Main_buttons(pygame.sprite.Sprite):
             else:
                 self.main_quit_surf = pacific_font.render('QUIT',True,("#342218"))
                 self.main_quit_surf = pygame.transform.scale(self.main_quit_surf,(200,50))
+
+
+        if self.object_type == "top_5":
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.main_start_surf= pacific_font.render('Easy',True,("#A9FFF8"))
+                self.main_start_surf = pygame.transform.scale(self.main_start_surf,(200,50))
+            else: 
+                self.main_start_surf = pacific_font.render('Easy',True,("#342218"))
+                self.main_start_surf = pygame.transform.scale(self.main_start_surf,(200,50))
+
+        if self.object_type == "middle_5":
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.main_help_surf = pacific_font.render('Medium',True,("#A9FFF8"))
+                self.main_help_surf = pygame.transform.scale(self.main_help_surf,(200,50))
+            else: 
+                self.main_help_surf = pacific_font.render('Medium',True,("#342218"))
+                self.main_help_surf = pygame.transform.scale(self.main_help_surf,(200,50))
+
+
+        
+        if self.object_type == "bottom_5":
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.main_quit_surf = pacific_font.render('Hard',True,("#A9FFF8"))
+                self.main_quit_surf = pygame.transform.scale(self.main_quit_surf,(200,50))
+            else:
+                self.main_quit_surf = pacific_font.render('Hard',True,("#342218"))
+                self.main_quit_surf = pygame.transform.scale(self.main_quit_surf,(200,50))
         
 
         
@@ -231,25 +267,26 @@ class Main_buttons(pygame.sprite.Sprite):
 
         # changes game mode based on which button was pressed. 
         clicked = self.check_click()
-        if clicked == 1:
-            game_state = 1 
+        if clicked == 5:
+            game_state = 5
         if clicked == 2:
             game_state = 3
         if clicked == 3:
-
             pygame.quit()
             exit()
+        if clicked == 1:
+            game_state = 1
         
         # blits text on buttons
-        if self.object_type == 'top':
+        if self.object_type == 'top' or self.object_type  == 'top_5':
             self.main_start_rect = self.main_start_surf.get_rect(center = (600, self.y_pos))
             screen.blit(self.main_start_surf,self.main_start_rect)
 
-        if self.object_type == 'middle':
+        if self.object_type == 'middle' or self.object_type == "middle_5":
              self.main_help_rect = self.main_help_surf.get_rect(center = (600, self.y_pos))
              screen.blit(self.main_help_surf,self.main_help_rect )
 
-        if self.object_type == 'bottom':
+        if self.object_type == 'bottom' or self.object_type == "bottom_5":
             self.main_quit_rect = self.main_quit_surf.get_rect(center = (600, self.y_pos))
             screen.blit(self.main_quit_surf,self.main_quit_rect)
            
@@ -399,6 +436,7 @@ pygame.display.set_caption("Crossing the Deep")
 FPS = 60
 game_state_2_timer = 0
 game_state_4_timer = 0
+game_state_5_timer = 0 
 game_state = 4 # 1 = main gameplay, 2 = title screen, 3 = how to play screen, 4 = game over screen
 
 score = 0
@@ -406,8 +444,8 @@ restart_screen_score = 0
 game_timer = 0 
 game_timer_score = 0
 
-win = False
-lose = True
+win = True
+lose = False
 
 ship_damage = 0
 
@@ -434,7 +472,7 @@ changing= False
 outline = False
 wind_score_weight = 0
 
-
+difficalty = 1
 
 
 
@@ -453,10 +491,19 @@ top = 'top'
 middle = 'middle'
 bottom = 'bottom'
 
+top_5 = 'top_5'
+middle_5 = 'middle_5'
+bottom_5 = 'bottom_5'
+
 main_button = pygame.sprite.Group()
 main_button.add(Main_buttons(top))
 main_button.add(Main_buttons(middle))
 main_button.add(Main_buttons(bottom))
+
+difficalty_buttons = pygame.sprite.Group()
+difficalty_buttons.add(Main_buttons(top_5))
+difficalty_buttons.add(Main_buttons(middle_5))
+difficalty_buttons.add(Main_buttons(bottom_5))
 
 
 # game over screen buttons
@@ -469,6 +516,8 @@ breakage = pygame.sprite.Group()
 
 button_how = pygame.sprite.Group()
 button_how.add(Button_how('top_left'))
+
+
 
 
 
@@ -522,7 +571,7 @@ breakage_type_ineligible_list = []
 # images
 # background
 background_surf = pygame.image.load("images/stormy_background(Medium).png").convert_alpha()
-# sunny_background_surf = pygame.image.load('images/new_sunny_background.png')
+# sunny_background_surf = pygame.image.load('images/new_sunny_background(Custom).png')
 
 # play
 dead_player_surf = pygame.image.load("images/player.png").convert_alpha()
@@ -674,7 +723,7 @@ while True:
                 keys = pygame.key.get_pressed()
                 if not fixing and not changing and player.sprite.rect.y == 470 and not keys[pygame.K_a] and not keys[pygame.K_d] and not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
                    
-                    if keys[pygame.K_r] or keys[pygame.K_KP_MINUS]:
+                    if keys[pygame.K_r] or keys[pygame.K_KP_MINUS]:                        
                         ship_damage -= 3
                         if ship_damage <= 0:
                             ship_damage = 0
@@ -996,7 +1045,7 @@ while True:
         
         # home screen
     if game_state == 2:
-
+        
         screen.blit(background_surf,(0,0))
 
         pygame.draw.rect(screen,"#c3dbdb",(title_rec.x-10 ,title_rec.y+10,title_rec.width + 30,title_rec.height))
@@ -1032,7 +1081,7 @@ while True:
         
         if lose:
             # get the scroe and make the text
-            player_score_surf = pacific_font.render(f'Distance Traveled: { int(restart_screen_score*5)}',True,(255,0,0))
+            player_score_surf = pacific_font.render(f'Distance Traveled: { int(restart_screen_score*5)}m',True,(255,0,0))
             player_score_surf = pygame.transform.scale(player_score_surf,(400,60))
             player_score_rect = player_score_surf.get_rect(center = (600, 210))
 
@@ -1092,12 +1141,21 @@ while True:
         game_over_button.update()
     else:
         game_state_4_timer = 0
+
+    if game_state == 5:
+        game_state_5_timer += 1
+        screen.blit(background_surf, (0,0))
+        difficalty_buttons.draw(screen)
+        difficalty_buttons.update()
+    else:
+        game_state_5_timer = 0 
+        
        
         
 
 
    
     pygame.display.update()
-    
+    print (difficalty)
     # While loop can only run at FPS speed per second. 
     clock.tick(FPS)
