@@ -199,7 +199,7 @@ class Main_buttons(pygame.sprite.Sprite):
                     clicked = 1
                 if self.object_type == 'bottom_5':
                     difficalty = 3
-                    clicked = 1 
+                    clicked = 1
         return clicked
     
 
