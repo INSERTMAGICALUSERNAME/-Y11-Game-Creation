@@ -194,7 +194,7 @@ class Main_buttons(pygame.sprite.Sprite):
         global difficulty
         clicked = None
         if self.rect.collidepoint(pygame.mouse.get_pos()):
-            if event.type == pygame.MOUSEBUTTONDOWN and game_state_2_timer > 30:
+            if event.type == pygame.MOUSEBUTTONDOWN and game_state_2_timer > 15:
                 if  self.object_type == 'top':
                     clicked = 5
                 elif self.object_type == 'middle':
@@ -202,7 +202,7 @@ class Main_buttons(pygame.sprite.Sprite):
                 elif self.object_type == 'bottom':
                     clicked = 3
 
-            elif event.type == pygame.MOUSEBUTTONDOWN and game_state_5_timer > 30:
+            elif event.type == pygame.MOUSEBUTTONDOWN and game_state_5_timer > 15:
                 if self.object_type == 'top_5':
                     difficulty = 1
                     clicked = 1
@@ -334,7 +334,7 @@ class Game_over_buttons(pygame.sprite.Sprite):
 
     def check_click(self):
         clicked = None
-        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_4_timer > 50:
+        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_4_timer > 15:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if  self.object_type == 'top':
                     clicked = 1
@@ -477,7 +477,7 @@ FPS = 60
 game_state_2_timer = 0
 game_state_4_timer = 0
 game_state_5_timer = 0 
-game_state = 2 # 1 = main gameplay, 2 = title screen, 3 = how to play screen, 4 = game over screen
+game_state = 2 # 1 = main gameplay, 2 = title screen, 3 = how to play screen, 4 = game over screen 5 = difficulty selection Screen. 
 
 score = 0
 restart_screen_score = 0
@@ -755,16 +755,16 @@ while True:
                     if breakage_count <=0:
                         None
                     elif breakage_count  <=1:
-                        ship_damage +=0.5
+                        ship_damage +=0.25
                         
                     elif breakage_count  <=2:
-                        ship_damage +=1
+                        ship_damage +=0.5
                         
                     elif breakage_count  <=3:
-                        ship_damage +=2
+                        ship_damage +=1.5
                         
                     elif breakage_count  <=4:
-                        ship_damage += 3
+                        ship_damage += 3.5
 
                 
                 elif difficulty == 2:
@@ -831,8 +831,11 @@ while True:
                         if ship_damage <= 0:
                             ship_damage = 0
                             water_outline = False
+                        
                     else:
                         water_outline = False
+                else:
+                    water_outline = False
                 
                 
                     
@@ -1154,7 +1157,10 @@ while True:
             lose = False
 
 
-
+        time_score_surf_2 = pacific_font.render(f'Time: {game_timer} Seconds',True,(0,255,0))
+        time_score_surf_2 = pygame.transform.scale(time_score_surf_2,(400,60))
+        time_score_rect_2 = time_score_surf_2.get_rect(center =(600, 85))
+        screen.blit(time_score_surf_2,time_score_rect_2 )
 
             
 
