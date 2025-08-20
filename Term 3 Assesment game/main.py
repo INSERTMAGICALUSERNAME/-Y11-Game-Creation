@@ -884,6 +884,7 @@ while True:
 
 
         if changing:
+
             
             if rudder_rect.colliderect(player.sprite.rect) and not pygame.sprite.spritecollide(player.sprite, breakage, False):
                 outline = True
@@ -898,16 +899,13 @@ while True:
             
         if 20 > wind_strength > -20:
             wind_score_weight = 0.2
-            
         elif 60 > wind_strength > -60:
             wind_score_weight = 0.1
-            
         elif 100 > wind_strength > -100:
             wind_score_weight = 0.05
-            
         else:
             wind_score_weight = -0.03
-            
+
         
         if press[pygame.K_x]or press[pygame.K_LSHIFT]:
             fixing = False
@@ -1224,6 +1222,6 @@ while True:
 
    
     pygame.display.update()
-   
+
     # While loop can only run at FPS speed per second. 
     clock.tick(FPS)
