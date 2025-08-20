@@ -194,7 +194,9 @@ class Main_buttons(pygame.sprite.Sprite):
         global difficulty
         clicked = None
         if self.rect.collidepoint(pygame.mouse.get_pos()):
+
             if event.type == pygame.MOUSEBUTTONDOWN and game_state_2_timer > 15:
+
                 if  self.object_type == 'top':
                     clicked = 5
                 elif self.object_type == 'middle':
@@ -202,7 +204,9 @@ class Main_buttons(pygame.sprite.Sprite):
                 elif self.object_type == 'bottom':
                     clicked = 3
 
+
             elif event.type == pygame.MOUSEBUTTONDOWN and game_state_5_timer > 15:
+
                 if self.object_type == 'top_5':
                     difficulty = 1
                     clicked = 1
@@ -334,7 +338,9 @@ class Game_over_buttons(pygame.sprite.Sprite):
 
     def check_click(self):
         clicked = None
+
         if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_4_timer > 15:
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if  self.object_type == 'top':
                     clicked = 1
@@ -477,7 +483,9 @@ FPS = 60
 game_state_2_timer = 0
 game_state_4_timer = 0
 game_state_5_timer = 0 
+
 game_state = 2 # 1 = main gameplay, 2 = title screen, 3 = how to play screen, 4 = game over screen 5 = difficulty selection Screen. 
+
 
 score = 0
 restart_screen_score = 0
@@ -721,6 +729,7 @@ while True:
         # if the game is in the main gameplay state
         if game_state == 1:
             
+
             # Breakages spawning. Gets a random item from a list. adds it to the breakages sprite class, removes from current list and than put on another list. \
             # spawns at differant rates based on difficulty 
             if difficulty == 1:
@@ -798,21 +807,10 @@ while True:
                         ship_damage += 6
 
 
-                # #DEBUG MODE
-                # if breakage_count <=0:
-                #     None
-                # elif breakage_count  <=1:
-                #     None
-                    
-                # elif breakage_count  <=2:
-                #     None
-                    
-                # elif breakage_count  <=3:
-                #     None
-                    
-                # elif breakage_count  <=4:
-                #     None
+
+
                 
+
 
 
                 keys = pygame.key.get_pressed()
@@ -826,17 +824,20 @@ while True:
                     not keys[pygame.K_LEFT]
                 ):
                     if keys[pygame.K_r] or keys[pygame.K_KP_MINUS]:
+
                         ship_damage -= 3
                         water_outline = True
                         if ship_damage <= 0:
                             ship_damage = 0
                             water_outline = False
+
                         
                     else:
                         water_outline = False
                 else:
                     water_outline = False
-                
+
+  
                 
                     
 
