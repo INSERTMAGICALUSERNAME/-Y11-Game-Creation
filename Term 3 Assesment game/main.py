@@ -1,3 +1,4 @@
+
 # Fixing Boat game
 # Creators Zach Hamilton and Johann Shotbolt
 # Date: 15/07/2025 
@@ -883,6 +884,7 @@ while True:
 
 
         if changing:
+
             
             if rudder_rect.colliderect(player.sprite.rect) and not pygame.sprite.spritecollide(player.sprite, breakage, False):
                 outline = True
@@ -903,6 +905,7 @@ while True:
             wind_score_weight = 0.05
         else:
             wind_score_weight = -0.03
+
         
         if press[pygame.K_x]or press[pygame.K_LSHIFT]:
             fixing = False
@@ -1219,6 +1222,6 @@ while True:
 
    
     pygame.display.update()
-    print (difficulty)
+
     # While loop can only run at FPS speed per second. 
     clock.tick(FPS)
