@@ -1,3 +1,4 @@
+
 # Fixing Boat game
 # Creators Zach Hamilton and Johann Shotbolt
 # Date: 15/07/2025 
@@ -10,7 +11,7 @@ import random
 
 # player class
 class Player (pygame.sprite.Sprite):
-    # inicailizes the class and sets thing like image, rect and gravity
+    # inicailizes the class and sets thing like image, rect and gravity. 
     def __init__(self):
         super().__init__()
         
@@ -113,6 +114,7 @@ class Player (pygame.sprite.Sprite):
         
 
 class Breakage(pygame.sprite.Sprite):
+    # inicailizes the class and sets thing like image and rect
     def __init__(self, type):
         super().__init__()
         self.type = type
@@ -162,7 +164,156 @@ class Breakage(pygame.sprite.Sprite):
             if isinstance(b, Breakage):
                 return [b.pass_1, b.pass_2, b.pass_3]
 
+              
+class Main_buttons(pygame.sprite.Sprite):
+    def __init__(self, type):
+        super().__init__()
+        self.object_type = type
 
+        self.image = pygame.image.load("images/Wooden_plank.png").convert_alpha()
+        self.x_pos = 600
+        if type == 'top':
+            self.y_pos = 278
+        if type == "middle":
+            self.y_pos = 372
+        if type == "bottom":
+            self.y_pos = 466
+        if type == "top_5":
+            self.y_pos = 278
+            self.image = pygame.transform.scale(self.image, (360, 65))
+        if type == "middle_5":
+            self.y_pos = 372
+            self.image = pygame.transform.scale(self.image, (360, 65))
+        if type == "bottom_5":
+            self.y_pos = 466
+            self.image = pygame.transform.scale(self.image, (360, 65))
+
+        self.rect = self.image.get_rect(center = (self.x_pos,self.y_pos))
+
+   # checks if the user clicks on a button and return a result based on the button pressed
+    def check_click(self):
+        global difficulty
+        clicked = None
+        if self.rect.collidepoint(pygame.mouse.get_pos()):
+            if event.type == pygame.MOUSEBUTTONDOWN and game_state_2_timer > 30:
+                if  self.object_type == 'top':
+                    clicked = 5
+                elif self.object_type == 'middle':
+                    clicked = 2
+                elif self.object_type == 'bottom':
+                    clicked = 3
+
+            elif event.type == pygame.MOUSEBUTTONDOWN and game_state_5_timer > 30:
+                if self.object_type == 'top_5':
+                    difficulty = 1
+                    clicked = 1
+                if self.object_type == 'middle_5':
+                    difficulty = 2
+                    clicked = 1
+                if self.object_type == 'bottom_5':
+                    difficulty = 3
+                    clicked = 1
+        return clicked
+    
+    def check_hover(self):
+        
+    # if the mouse is hovering over the game over buttom the text will change colour
+        if self.object_type == "top":
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.main_start_surf= pacific_font.render('START',True,("#A9FFF8"))
+                self.main_start_surf = pygame.transform.scale(self.main_start_surf,(200,50))
+            else: 
+                self.main_start_surf = pacific_font.render('START',True,("#342218"))
+                self.main_start_surf = pygame.transform.scale(self.main_start_surf,(200,50))
+
+        if self.object_type == "middle":
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.main_help_surf = pacific_font.render('HOW TO PLAY',True,("#A9FFF8"))
+                self.main_help_surf = pygame.transform.scale(self.main_help_surf,(200,50))
+            else: 
+                self.main_help_surf = pacific_font.render('HOW TO PLAY',True,("#342218"))
+                self.main_help_surf = pygame.transform.scale(self.main_help_surf,(200,50))
+
+
+        
+        if self.object_type == "bottom":
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.main_quit_surf = pacific_font.render('QUIT',True,("#A9FFF8"))
+                self.main_quit_surf = pygame.transform.scale(self.main_quit_surf,(200,50))
+            else:
+                self.main_quit_surf = pacific_font.render('QUIT',True,("#342218"))
+                self.main_quit_surf = pygame.transform.scale(self.main_quit_surf,(200,50))
+        
+        if self.object_type == "top_5":
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.main_start_surf= pacific_font.render('Easy',True,("#A9FFF8"))
+                self.main_start_surf = pygame.transform.scale(self.main_start_surf,(200,50))
+            else: 
+                self.main_start_surf = pacific_font.render('Easy',True,("#342218"))
+                self.main_start_surf = pygame.transform.scale(self.main_start_surf,(200,50))
+
+        if self.object_type == "middle_5":
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.main_help_surf = pacific_font.render('Medium',True,("#A9FFF8"))
+                self.main_help_surf = pygame.transform.scale(self.main_help_surf,(200,50))
+            else: 
+                self.main_help_surf = pacific_font.render('Medium',True,("#342218"))
+                self.main_help_surf = pygame.transform.scale(self.main_help_surf,(200,50))
+
+
+        
+        if self.object_type == "bottom_5":
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.main_quit_surf = pacific_font.render('Hard',True,("#A9FFF8"))
+                self.main_quit_surf = pygame.transform.scale(self.main_quit_surf,(200,50))
+            else:
+                self.main_quit_surf = pacific_font.render('Hard',True,("#342218"))
+                self.main_quit_surf = pygame.transform.scale(self.main_quit_surf,(200,50))
+        
+
+        
+    def update(self):
+        global game_state
+
+        self.check_hover()
+
+        
+        clicked = self.check_click()
+        if clicked == 5:
+            game_state = 5
+        if clicked == 2:
+            game_state = 3
+        if clicked == 3:
+            pygame.quit()
+            exit()
+        if clicked == 1:
+            game_state = 1
+        
+
+        if self.object_type == 'top':
+            self.main_start_rect = self.main_start_surf.get_rect(center = (600, self.y_pos))
+            screen.blit(self.main_start_surf,self.main_start_rect)
+
+        if self.object_type == 'middle':
+            self.main_help_rect = self.main_help_surf.get_rect(center = (600, self.y_pos))
+            screen.blit(self.main_help_surf,self.main_help_rect )
+
+        if self.object_type == 'bottom':
+            self.main_quit_rect = self.main_quit_surf.get_rect(center = (600, self.y_pos))
+            screen.blit(self.main_quit_surf,self.main_quit_rect)
+
+        if self.object_type == 'top_5':
+            self.main_start_rect = self.main_start_surf.get_rect(center = (600, self.y_pos))
+            screen.blit(self.main_start_surf, self.main_start_rect)
+
+        if self.object_type == 'middle_5':
+            self.main_help_rect = self.main_help_surf.get_rect(center = (600, self.y_pos))
+            screen.blit(self.main_help_surf, self.main_help_rect)
+
+        if self.object_type == 'bottom_5':
+            self.main_quit_rect = self.main_quit_surf.get_rect(center = (600, self.y_pos))
+            screen.blit(self.main_quit_surf, self.main_quit_rect)
+           
 
 class Game_over_buttons(pygame.sprite.Sprite):
     def __init__(self, type):
@@ -184,7 +335,7 @@ class Game_over_buttons(pygame.sprite.Sprite):
 
     def check_click(self):
         clicked = None
-        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_4_timer > 5:
+        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_4_timer > 50:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if  self.object_type == 'top':
                     clicked = 1
@@ -242,6 +393,7 @@ class Game_over_buttons(pygame.sprite.Sprite):
 
 
 class Button_how(pygame.sprite.Sprite):
+    # inicailizes the class and sets thing like image and rect
     def __init__(self, type):
         super().__init__()
         self.type = type
@@ -257,11 +409,6 @@ class Button_how(pygame.sprite.Sprite):
             self.image = pygame.transform.scale(self.image,(250,50))
 
       
-       
-            
-        
-
-    
         # self.image = pygame.transform.scale(self.image,(360,65))
         self.rect = self.image.get_rect(center = (self.x_pos, self.y_pos))
 
@@ -282,8 +429,7 @@ class Button_how(pygame.sprite.Sprite):
                 self.restart_game_over_surf = pygame.transform.scale(self.restart_game_over_surf,(200,50))
             else: 
                 self.restart_game_over_surf = pacific_font.render('RESTART',True,("#342218"))
-                self.restart_game_over_surf = pygame.transform.scale(self.restart_game_over_surf,(200,50))
-
+                self.restart_game_over_surf = pygame.transform.scale(self.restart_game_over_surf,(200,50))        
         
         
         
@@ -296,6 +442,9 @@ class Button_how(pygame.sprite.Sprite):
     def update(self):
         self.draw(screen)
         self.check_click(pygame.mouse.get_pos())
+
+
+
 
 def display_score():
     global score
@@ -319,11 +468,31 @@ pixel_font = pygame.font.Font('Font/Pixeltype.ttf',50)
 clock = pygame.time.Clock()
 pygame.display.set_caption("Crossing the Deep")
 
+
+
+
+
+
+# variable set up
 FPS = 60
 game_state_2_timer = 0
 game_state_4_timer = 0
-game_state = 4 # 1 = main gameplay, 2 = title screen, 3 = how to play screen, 4 = game over screen
+game_state_5_timer = 0 
+game_state = 2 # 1 = main gameplay, 2 = title screen, 3 = how to play screen, 4 = game over screen
+
 score = 0
+restart_screen_score = 0
+game_timer = 0 
+game_timer_score = 0
+
+win = True
+lose = False
+
+ship_damage = 0
+
+
+
+
 
 
 # set up passcode variables
@@ -343,10 +512,9 @@ fixing = False
 changing= False
 outline = False
 wind_score_weight = 0
-win = True
-lose = False
-water_outline = False
 
+water_outline = False
+difficulty = 1
 # Groups
 
 #player group
@@ -361,10 +529,19 @@ top = 'top'
 middle = 'middle'
 bottom = 'bottom'
 
+top_5 = 'top_5'
+middle_5 = 'middle_5'
+bottom_5 = 'bottom_5'
+
 main_button = pygame.sprite.Group()
 main_button.add(Main_buttons(top))
 main_button.add(Main_buttons(middle))
 main_button.add(Main_buttons(bottom))
+
+difficulty_buttons = pygame.sprite.Group()
+difficulty_buttons.add(Main_buttons(top_5))
+difficulty_buttons.add(Main_buttons(middle_5))
+difficulty_buttons.add(Main_buttons(bottom_5))
 
 
 # game over screen buttons
@@ -381,6 +558,11 @@ button_how.add(Button_how('top_left'))
 
 
 
+
+
+
+
+
 #Compass and wind
 wind_strength = 0
 tilt = (920 + wind_strength)
@@ -391,6 +573,11 @@ if wind_direction == 0:
 if wind_direction == 1:
     wind_strength += 0.1
 tilt = (920 + wind_strength)
+
+
+
+
+
 
 #title screen
 title_surf = pacific_font.render('Pacific Pursuit', True,"#5fa8a9")
@@ -404,8 +591,6 @@ hanging_sign = pygame.transform.scale(hanging_sign,(500,700))
 hanging_sign_rec = hanging_sign.get_rect(center = (600, 275))
 
 
-#title screen text
-
 
 
 
@@ -416,15 +601,21 @@ hanging_sign_rec = hanging_sign.get_rect(center = (600, 275))
 breakage_type_eligible_list = ['sail', 'bow', 'floor_board', 'rope']
 breakage_type_ineligible_list = []
 
-# images
-background_surf = pygame.image.load("images/stormy_background(Medium).png").convert_alpha()
 
+
+
+
+
+# images
+# background
+background_surf = pygame.image.load("images/stormy_background(Medium).png").convert_alpha()
+# sunny_background_surf = pygame.image.load('images/new_sunny_background(Custom).png')
+
+# play
 dead_player_surf = pygame.image.load("images/player.png").convert_alpha()
 dead_player_surf = pygame.transform.scale(dead_player_surf, (50, 100))
 dead_player_rect = dead_player_surf.get_rect(midbottom = (1050,410))
-
 alive_player_rect = dead_player_surf.get_rect(midbottom = (925,610))
-
 # compass_direction surfs and rects
 compass_direction = pygame.image.load("images/compass_direction.png").convert_alpha()
 compass_direction = pygame.transform.scale2x(compass_direction)
@@ -455,9 +646,9 @@ win_island_rect = win_island_surf.get_rect(bottomright =(1400,675))
 broken_boat_surf = pygame.image.load("images/broken_boat.png").convert_alpha()
 broken_boat_surf = pygame.transform.scale(broken_boat_surf,(1200,675))
 broken_boat_rect = broken_boat_surf.get_rect(center = (500, 475))
-# ship damage
-ship_damage = 0
 
+
+# ship damage
 ship_damage_meter_surf = pygame.image.load("images/damage_bar.xcf").convert_alpha()
 ship_damage_meter_surf = pygame.transform.scale2x(ship_damage_meter_surf)
 ship_damage_meter_surf = pygame.transform.rotate(ship_damage_meter_surf, 90)
@@ -474,7 +665,21 @@ win_boat_rect = boat_surf.get_rect(bottomright = (1000, 775))
 
 
 raised_deck = pygame.Rect(310, 530, 510, 20)
-rudder_rect = pygame.Rect(330, 420, 100, 50)
+rudder_rect = pygame.Rect(330, 450, 100, 50)
+
+# Game Over screen text
+
+
+
+traveled_safly_surf = pacific_font.render('You Succsesfuly Traveled Throught the Storm',True,(0,255,0))
+traveled_safly_surf = pygame.transform.scale(traveled_safly_surf,(1100,100))
+traveled_safly_rect = traveled_safly_surf.get_rect(center = (600,100))
+
+
+
+not_traveled_safly_surf = pacific_font.render('You Perished While Trying to Travel Through the Storm',True,(255,0,0))
+not_traveled_safly_surf = pygame.transform.scale(not_traveled_safly_surf,(1100,100))
+not_traveled_safly_rect = not_traveled_safly_surf.get_rect(center = (600,100))
 
 
 
@@ -485,6 +690,9 @@ pygame.time.set_timer(breakage_timer,5000)
 
 damage_timer = pygame.USEREVENT + 2
 pygame.time.set_timer(damage_timer,200)
+
+second_timer = pygame.USEREVENT + 3
+pygame.time.set_timer(second_timer,1000)
  
 while True:
 
@@ -516,7 +724,7 @@ while True:
                     breakage_type_eligible_list.remove(removed_breakage)
                     breakage_type_ineligible_list.append(removed_breakage) # might not be needed for use laster
 
-
+            # damage the ship based on the amount of breakages
             if event.type == damage_timer:
                 breakage_count = len(breakage_type_ineligible_list)
                 
@@ -533,9 +741,8 @@ while True:
                     
                 elif breakage_count  <=4:
                     ship_damage += 5
-                
 
-                # #DEBUG MODE
+                    # #DEBUG MODE
                 # if breakage_count <=0:
                 #     None
                 # elif breakage_count  <=1:
@@ -554,7 +761,7 @@ while True:
                 keys = pygame.key.get_pressed()
                 if not fixing and not changing and player.sprite.rect.y == 470 and not keys[pygame.K_a] and not keys[pygame.K_d] and not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
                    
-                    if keys[pygame.K_r] or keys[pygame.K_KP_MINUS]:
+                    if keys[pygame.K_r] or keys[pygame.K_KP_MINUS]:                        
                         ship_damage -= 3
                         water_outline = True
                         if ship_damage <= 0:
@@ -562,14 +769,16 @@ while True:
                             water_outline = False
                     else:
                         water_outline = False
+                
+                
+                    
+
+
+            # increase timer by 1 every second
+            if event.type == second_timer:
+                game_timer +=1
 
             
-
-
-
-            
-
-
 
             # if user presses 'f' key, it will set fixing to True, allowing the player to input digits.
             # if user presses 'r' key, it will set fixing to False, resetting the input digits to None.
@@ -667,6 +876,7 @@ while True:
         if rudder_rect.colliderect(player.sprite):
             if press[pygame.K_f] or press[pygame.K_KP_PLUS] or press[pygame.K_KP_ENTER]:
                 changing = True
+                outline = True 
                 
         else:
                 changing = False  
@@ -675,21 +885,34 @@ while True:
 
         if changing:
             
-            if rudder_rect.collidepoint(player.sprite.rect.midtop) and not pygame.sprite.spritecollide(player.sprite, breakage, False):
+            if rudder_rect.colliderect(player.sprite.rect) and not pygame.sprite.spritecollide(player.sprite, breakage, False):
                 outline = True
                 if press[pygame.K_q]:
                     wind_strength += 1
                 if press[pygame.K_e]:
                     wind_strength -= 1
             
+            else:
+                outline = False
+                changing = False
+            
         if 20 > wind_strength > -20:
             wind_score_weight = 0.2
+            
         elif 60 > wind_strength > -60:
             wind_score_weight = 0.1
+            
         elif 100 > wind_strength > -100:
             wind_score_weight = 0.05
+            
         else:
             wind_score_weight = -0.03
+            
+        
+        if press[pygame.K_x]or press[pygame.K_LSHIFT]:
+            fixing = False
+            changing = False
+            outline = False
         
         
         
@@ -835,15 +1058,17 @@ while True:
                     input_digit_2 = None
                     input_digit_3 = None
 
+
+        # end of game resets
         if ship_damage >= 250:
             for b in breakage:
                 b.kill()
             ship_damage = 0 
             wind_strength = 0 
+            restart_screen_score = score
             score = 0
             breakage_type_eligible_list = ['sail', 'bow', 'floor_board', 'rope']
             breakage_type_ineligible_list = []
-
             game_state = 4
             win = False
             lose = True
@@ -853,7 +1078,10 @@ while True:
                 b.kill()
             ship_damage = 0 
             wind_strength = 0 
+            restart_screen_score = score
             score = 0
+            game_timer_score = game_timer
+            game_timer = 0 
             breakage_type_eligible_list = ['sail', 'bow', 'floor_board', 'rope']
             breakage_type_ineligible_list = []
 
@@ -875,12 +1103,12 @@ while True:
         player.update()
         player.draw(screen)
        
-            
+        
             
         
-        #title and game over screen
+        # home screen
     if game_state == 2:
-
+        
         screen.blit(background_surf,(0,0))
 
         pygame.draw.rect(screen,"#c3dbdb",(title_rec.x-10 ,title_rec.y+10,title_rec.width + 30,title_rec.height))
@@ -897,12 +1125,12 @@ while True:
         main_button.update()
         game_state_2_timer +=1 
         
-        # button.update()
+       
     else:   
         game_state_2_timer = 0
         
       
-       
+    # help screen what is on screen
     if game_state == 3:
         
         screen.blit(background_surf,(0,0))
@@ -910,27 +1138,92 @@ while True:
         pygame.draw.rect(screen,"#2C2C2CCC",(50,25,1100,625),10,2)
         button_how.draw(screen)
 
+    
     if game_state == 4:
         game_state_4_timer += 1
-        screen.blit(background_surf,(0,0))
+        
         if lose:
+            # get the scroe and make the text
+            player_score_surf = pacific_font.render(f'Distance Traveled: { int(restart_screen_score*5)}m',True,(255,0,0))
+            player_score_surf = pygame.transform.scale(player_score_surf,(400,60))
+            player_score_rect = player_score_surf.get_rect(center = (600, 210))
+
+            screen.blit(background_surf,(0,0))
             screen.blit(broken_boat_surf,broken_boat_rect)
             screen.blit(dead_player_surf, dead_player_rect)
+            # Draw a dark grey transparent overlay over the whole screen
+            overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+            # Only cover the text area with the overlay
+            overlay.fill((0, 0, 0, 0))  # Fully transparent
+            overlay_rect = pygame.Rect(50, 50, 1100, 200)
+            # Add padding to the overlay rectangle
+            padding = -20
+            padded_rect = overlay_rect.inflate(-padding * 2, -padding * 2)
+            pygame.draw.rect(overlay, (30, 30, 40, 180), padded_rect)
+            screen.blit(overlay, (0, 0))
+            # screen.blit(you_win_surf, you_win_rect)
+            # Draw a navy blue outline around the padded overlay area
+            pygame.draw.rect(screen, (35, 41, 67), padded_rect,10)
+
+            screen.blit(player_score_surf, player_score_rect)
+            screen.blit(not_traveled_safly_surf,not_traveled_safly_rect)
+        
+        
         if win:
+            time_score_surf = pacific_font.render(f'Time: {game_timer_score} Seconds',True,(0,255,0))
+            time_score_surf = pygame.transform.scale(time_score_surf,(400,60))
+            time_score_rect = time_score_surf.get_rect(center =(600, 210))
+
+            
+            screen.blit(background_surf, (0,0))
             screen.blit(win_island_surf, win_island_rect)
             screen.blit(dead_player_surf, alive_player_rect)
             screen.blit(boat_surf, win_boat_rect)
+            
+            
+            # Draw a dark grey transparent overlay over the whole screen
+            overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+            
+            # Only cover the text area with the overlay
+            overlay.fill((0, 0, 0, 0))  # Fully transparent
+            overlay_rect = pygame.Rect(50, 50, 1100, 200)
+            # Add padding to the overlay rectangle
+            padding = -20
+            padded_rect = overlay_rect.inflate(-padding * 2, -padding * 2)
+            pygame.draw.rect(overlay, (30, 30, 40, 180), padded_rect)
+            screen.blit(overlay, (0, 0))
+            # screen.blit(you_win_surf, you_win_rect)
+            # Draw a navy blue outline around the padded overlay area
+            pygame.draw.rect(screen, (35, 41, 67), padded_rect,10)
+            
+            screen.blit(traveled_safly_surf,traveled_safly_rect)
+            screen.blit(time_score_surf,time_score_rect)
+
+        
         game_over_button.draw(screen)
         game_over_button.update()
+
+
         
     else:
         game_state_4_timer = 0
+
+    if game_state == 5:
+        game_state_5_timer += 1
+        screen.blit(background_surf, (0,0))
+        difficulty_buttons.draw(screen)
+        difficulty_buttons.update()
+        
+        
+    else:
+        game_state_5_timer = 0 
+        
        
         
 
 
    
     pygame.display.update()
-    
+   
     # While loop can only run at FPS speed per second. 
     clock.tick(FPS)
