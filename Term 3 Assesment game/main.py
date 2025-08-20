@@ -1,4 +1,3 @@
-
 # Fixing Boat game
 # Creators Zach Hamilton and Johann Shotbolt
 # Date: 15/07/2025 
@@ -195,7 +194,9 @@ class Main_buttons(pygame.sprite.Sprite):
         global difficulty
         clicked = None
         if self.rect.collidepoint(pygame.mouse.get_pos()):
-            if event.type == pygame.MOUSEBUTTONDOWN and game_state_2_timer > 30:
+
+            if event.type == pygame.MOUSEBUTTONDOWN and game_state_2_timer > 15:
+
                 if  self.object_type == 'top':
                     clicked = 5
                 elif self.object_type == 'middle':
@@ -203,7 +204,9 @@ class Main_buttons(pygame.sprite.Sprite):
                 elif self.object_type == 'bottom':
                     clicked = 3
 
-            elif event.type == pygame.MOUSEBUTTONDOWN and game_state_5_timer > 30:
+
+            elif event.type == pygame.MOUSEBUTTONDOWN and game_state_5_timer > 15:
+
                 if self.object_type == 'top_5':
                     difficulty = 1
                     clicked = 1
@@ -335,7 +338,9 @@ class Game_over_buttons(pygame.sprite.Sprite):
 
     def check_click(self):
         clicked = None
-        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_4_timer > 50:
+
+        if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_4_timer > 15:
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if  self.object_type == 'top':
                     clicked = 1
@@ -478,7 +483,9 @@ FPS = 60
 game_state_2_timer = 0
 game_state_4_timer = 0
 game_state_5_timer = 0 
-game_state = 2 # 1 = main gameplay, 2 = title screen, 3 = how to play screen, 4 = game over screen
+
+game_state = 2 # 1 = main gameplay, 2 = title screen, 3 = how to play screen, 4 = game over screen 5 = difficulty selection Screen. 
+
 
 score = 0
 restart_screen_score = 0
@@ -685,8 +692,14 @@ not_traveled_safly_rect = not_traveled_safly_surf.get_rect(center = (600,100))
 
 
 # clocks
-breakage_timer = pygame.USEREVENT + 1
-pygame.time.set_timer(breakage_timer,5000)
+breakage_timer_e = pygame.USEREVENT + 1
+pygame.time.set_timer(breakage_timer_e,7000)
+
+breakage_timer_m = pygame.USEREVENT + 4
+pygame.time.set_timer(breakage_timer_m,5000)
+
+breakage_timer_h = pygame.USEREVENT + 5
+pygame.time.set_timer(breakage_timer_h,4000)
 
 damage_timer = pygame.USEREVENT + 2
 pygame.time.set_timer(damage_timer,200)
@@ -716,60 +729,115 @@ while True:
         # if the game is in the main gameplay state
         if game_state == 1:
             
-            # Breakages spawning. Gets a random item from a list. adds it to the breakages sprite class, removes from current list and than put on another list. 
-            if event.type == breakage_timer:
-                if breakage_type_eligible_list:
-                    removed_breakage = breakage_type_eligible_list[random.randint(0, len(breakage_type_eligible_list) - 1)]
-                    breakage.add(Breakage(removed_breakage))
-                    breakage_type_eligible_list.remove(removed_breakage)
-                    breakage_type_ineligible_list.append(removed_breakage) # might not be needed for use laster
 
-            # damage the ship based on the amount of breakages
+            # Breakages spawning. Gets a random item from a list. adds it to the breakages sprite class, removes from current list and than put on another list. \
+            # spawns at differant rates based on difficulty 
+            if difficulty == 1:
+                if event.type == breakage_timer_e:
+                    if breakage_type_eligible_list:
+                        removed_breakage = breakage_type_eligible_list[random.randint(0, len(breakage_type_eligible_list) - 1)]
+                        breakage.add(Breakage(removed_breakage))
+                        breakage_type_eligible_list.remove(removed_breakage)
+                        breakage_type_ineligible_list.append(removed_breakage) 
+
+            elif difficulty == 2:
+                if event.type == breakage_timer_m:
+                    if breakage_type_eligible_list:
+                        removed_breakage = breakage_type_eligible_list[random.randint(0, len(breakage_type_eligible_list) - 1)]
+                        breakage.add(Breakage(removed_breakage))
+                        breakage_type_eligible_list.remove(removed_breakage)
+                        breakage_type_ineligible_list.append(removed_breakage) 
+
+            elif difficulty == 3:
+                if event.type == breakage_timer_h:
+                    if breakage_type_eligible_list:
+                        removed_breakage = breakage_type_eligible_list[random.randint(0, len(breakage_type_eligible_list) - 1)]
+                        breakage.add(Breakage(removed_breakage))
+                        breakage_type_eligible_list.remove(removed_breakage)
+                        breakage_type_ineligible_list.append(removed_breakage) 
+
+            # damage the ship based on the amount of breakages and difficulty
             if event.type == damage_timer:
                 breakage_count = len(breakage_type_ineligible_list)
                 
-                if breakage_count <=0:
-                    None
-                elif breakage_count  <=1:
-                    ship_damage +=1
-                    
-                elif breakage_count  <=2:
-                    ship_damage +=2
-                    
-                elif breakage_count  <=3:
-                    ship_damage +=3.5
-                    
-                elif breakage_count  <=4:
-                    ship_damage += 5
+                if difficulty == 1:
+                    if breakage_count <=0:
+                        None
+                    elif breakage_count  <=1:
+                        ship_damage +=0.25
+                        
+                    elif breakage_count  <=2:
+                        ship_damage +=0.5
+                        
+                    elif breakage_count  <=3:
+                        ship_damage +=1.5
+                        
+                    elif breakage_count  <=4:
+                        ship_damage += 3.5
 
-                    # #DEBUG MODE
-                # if breakage_count <=0:
-                #     None
-                # elif breakage_count  <=1:
-                #     None
-                    
-                # elif breakage_count  <=2:
-                #     None
-                    
-                # elif breakage_count  <=3:
-                #     None
-                    
-                # elif breakage_count  <=4:
-                #     None
+                
+                elif difficulty == 2:
+                    if breakage_count <=0:
+                        None
+                    elif breakage_count  <=1:
+                        ship_damage +=1
+                        
+                    elif breakage_count  <=2:
+                        ship_damage +=2
+                        
+                    elif breakage_count  <=3:
+                        ship_damage +=3.5
+                        
+                    elif breakage_count  <=4:
+                        ship_damage += 5
+                        
+                elif difficulty == 3:
+                    if breakage_count <=0:
+                        None
+                    elif breakage_count  <=1:
+                        ship_damage +=1.5
+                        
+                    elif breakage_count  <=2:
+                        ship_damage +=2.5
+                        
+                    elif breakage_count  <=3:
+                        ship_damage +=4.5
+                        
+                    elif breakage_count  <=4:
+                        ship_damage += 6
+
+
+
+
                 
 
+
+
                 keys = pygame.key.get_pressed()
-                if not fixing and not changing and player.sprite.rect.y == 470 and not keys[pygame.K_a] and not keys[pygame.K_d] and not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
-                   
-                    if keys[pygame.K_r] or keys[pygame.K_KP_MINUS]:                        
+                if (
+                    not fixing and
+                    not changing and
+                    player.sprite.rect.y == 470 and
+                    not keys[pygame.K_a] and
+                    not keys[pygame.K_d] and
+                    not keys[pygame.K_RIGHT] and
+                    not keys[pygame.K_LEFT]
+                ):
+                    if keys[pygame.K_r] or keys[pygame.K_KP_MINUS]:
+
                         ship_damage -= 3
                         water_outline = True
                         if ship_damage <= 0:
                             ship_damage = 0
                             water_outline = False
+
+                        
                     else:
                         water_outline = False
-                
+                else:
+                    water_outline = False
+
+  
                 
                     
 
@@ -873,6 +941,9 @@ while True:
 
         press = pygame.key.get_pressed()
         
+
+
+
         if rudder_rect.colliderect(player.sprite):
             if press[pygame.K_f] or press[pygame.K_KP_PLUS] or press[pygame.K_KP_ENTER]:
                 changing = True
@@ -884,7 +955,6 @@ while True:
 
 
         if changing:
-
             
             if rudder_rect.colliderect(player.sprite.rect) and not pygame.sprite.spritecollide(player.sprite, breakage, False):
                 outline = True
@@ -905,7 +975,6 @@ while True:
             wind_score_weight = 0.05
         else:
             wind_score_weight = -0.03
-
         
         if press[pygame.K_x]or press[pygame.K_LSHIFT]:
             fixing = False
@@ -1089,7 +1158,10 @@ while True:
             lose = False
 
 
-
+        time_score_surf_2 = pacific_font.render(f'Time: {game_timer} Seconds',True,(0,255,0))
+        time_score_surf_2 = pygame.transform.scale(time_score_surf_2,(400,60))
+        time_score_rect_2 = time_score_surf_2.get_rect(center =(600, 85))
+        screen.blit(time_score_surf_2,time_score_rect_2 )
 
             
 
@@ -1222,6 +1294,6 @@ while True:
 
    
     pygame.display.update()
-
+    print (difficulty)
     # While loop can only run at FPS speed per second. 
     clock.tick(FPS)
