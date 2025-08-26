@@ -1322,6 +1322,5 @@ while True:
 
    
     pygame.display.update()
-    print (difficulty)
     # While loop can only run at FPS speed per second. 
     clock.tick(FPS)
