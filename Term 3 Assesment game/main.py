@@ -683,12 +683,14 @@ traveled_safly_surf = pygame.transform.scale(traveled_safly_surf,(1100,100))
 traveled_safly_rect = traveled_safly_surf.get_rect(center = (600,100))
 
 
-
 not_traveled_safly_surf = pacific_font.render('You Perished While Trying to Travel Through the Storm',True,(255,0,0))
 not_traveled_safly_surf = pygame.transform.scale(not_traveled_safly_surf,(1100,100))
 not_traveled_safly_rect = not_traveled_safly_surf.get_rect(center = (600,100))
 
-
+#how to screen 
+how_to_play_surf = pygame.image.load("images/how to play.png").convert_alpha()
+how_to_play_surf = pygame.transform.scale(how_to_play_surf,(1100,625))
+how_to_play_rect = how_to_play_surf.get_rect(center = (600, 337))
 
 
 # clocks
@@ -966,15 +968,37 @@ while True:
             else:
                 outline = False
                 changing = False
-            
-        if 20 > wind_strength > -20:
-            wind_score_weight = 0.2
-        elif 60 > wind_strength > -60:
-            wind_score_weight = 0.1
-        elif 100 > wind_strength > -100:
-            wind_score_weight = 0.05
-        else:
-            wind_score_weight = -0.03
+        # sets the wind score weight based on the difficulty 
+
+        if difficulty == 1:  
+            if 20 > wind_strength > -20:
+                wind_score_weight = 0.25
+            elif 60 > wind_strength > -60:
+                wind_score_weight = 0.2
+            elif 100 > wind_strength > -100:
+                wind_score_weight = 0.15
+            else:
+                wind_score_weight = 0.07
+        
+        elif difficulty == 2:
+            if 20 > wind_strength > -20:
+                wind_score_weight = 0.2
+            elif 60 > wind_strength > -60:
+                wind_score_weight = 0.1
+            elif 100 > wind_strength > -100:
+                wind_score_weight = 0.05
+            else:
+                wind_score_weight = -0.03
+
+        elif difficulty == 3:
+            if 20 > wind_strength > -20:
+                wind_score_weight = 0.2
+            elif 60 > wind_strength > -60:
+                wind_score_weight = 0.075
+            elif 100 > wind_strength > -100:
+                wind_score_weight = 0.05
+            else:
+                wind_score_weight = -0.1
         
         if press[pygame.K_x]or press[pygame.K_LSHIFT]:
             fixing = False
@@ -1207,6 +1231,7 @@ while True:
         pygame.draw.rect(screen,"#673506FF",(50,25,1100,625))
         pygame.draw.rect(screen,"#2C2C2CCC",(50,25,1100,625),10,2)
         button_how.draw(screen)
+        screen.blit(how_to_play_surf,how_to_play_rect)
 
     
     if game_state == 4:
@@ -1294,6 +1319,6 @@ while True:
 
    
     pygame.display.update()
-    print (difficulty)
+
     # While loop can only run at FPS speed per second. 
     clock.tick(FPS)
