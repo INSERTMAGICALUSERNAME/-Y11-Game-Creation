@@ -1307,19 +1307,16 @@ while True:
     if game_state == 5:
         game_state_5_timer += 1
         screen.blit(background_surf, (0,0))
+        pygame.draw.rect(screen,"#e2bc70",(350,210,490,350))
+        pygame.draw.rect(screen,"#3A2712",(350,210,490,350),10,2)
         difficulty_buttons.draw(screen)
         difficulty_buttons.update()
         
         
     else:
         game_state_5_timer = 0 
-        
-       
-        
-
 
    
     pygame.display.update()
-
     # While loop can only run at FPS speed per second. 
     clock.tick(FPS)
