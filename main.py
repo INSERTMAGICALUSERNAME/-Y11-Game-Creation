@@ -14,7 +14,7 @@ class Player (pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         
-        self.player_image_no_scale = pygame.image.load("images/Player_16*32_clear_background.png").convert_alpha()
+        self.player_image_no_scale = pygame.image.load("images/player_new.png").convert_alpha()
         self.player_image = pygame.transform.scale(self.player_image_no_scale, (50, 100))
 
         self.image = self.player_image
@@ -619,7 +619,7 @@ background_surf = pygame.image.load("images/stormy_background(Medium).png").conv
 # sunny_background_surf = pygame.image.load('images/new_sunny_background(Custom).png')
 
 # play
-dead_player_surf = pygame.image.load("images/Player_16*32_clear_background.png").convert_alpha()
+dead_player_surf = pygame.image.load("images/player_new.png").convert_alpha()
 dead_player_surf = pygame.transform.scale(dead_player_surf, (50, 100))
 dead_player_rect = dead_player_surf.get_rect(midbottom = (1050,410))
 alive_player_rect = dead_player_surf.get_rect(midbottom = (925,610))
