@@ -686,7 +686,7 @@ rudder_rect = pygame.Rect(330, 450, 100, 50)
 
 
 
-traveled_safly_surf = pacific_font.render('You Succsesfuly Traveled Throught the Storm',True,(0,255,0))
+traveled_safly_surf = pacific_font.render('You Succsesfuly Traveled Through the Storm',True,(0,255,0))
 traveled_safly_surf = pygame.transform.scale(traveled_safly_surf,(1100,100))
 traveled_safly_rect = traveled_safly_surf.get_rect(center = (600,100))
 
@@ -829,7 +829,8 @@ while True:
                         ship_damage += 6
 
 
-
+                #debug mode
+                # ship_damage = 0
 
                 
 
