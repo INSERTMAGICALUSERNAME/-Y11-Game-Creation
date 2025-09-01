@@ -619,7 +619,7 @@ background_surf = pygame.image.load("images/stormy_background(Medium).png").conv
 # sunny_background_surf = pygame.image.load('images/new_sunny_background(Custom).png')
 
 # play
-dead_player_surf = pygame.image.load("images/player_new.png").convert_alpha()
+dead_player_surf = pygame.image.load("images/player.png").convert_alpha()
 dead_player_surf = pygame.transform.scale(dead_player_surf, (50, 100))
 dead_player_rect = dead_player_surf.get_rect(midbottom = (1050,410))
 alive_player_rect = dead_player_surf.get_rect(midbottom = (925,610))
@@ -648,15 +648,7 @@ score_island_rect = score_island_surf.get_rect(center=(950, 35))
 win_island_surf = pygame.image.load("images/island.png").convert_alpha()
 win_island_rect = win_island_surf.get_rect(bottomright =(1400,675))
 
-# rain frames and animations.
-rain_frame_1 = pygame.image.load("images/rain_frame_1.png").convert_alpha()
-rain_surf_1 = pygame.transform.scale(rain_frame_1,(1200,675))
-rain_frame_2 = pygame.image.load("images/rain_frame_2.png").convert_alpha()
-rain_surf_2 = pygame.transform.scale(rain_frame_2,(1200,675))
-rain_frames = [rain_surf_1,rain_surf_2]
-rain_frame_index = 0
-rain_surf = rain_frames[rain_frame_index]
-rain_rect = rain_surf.get_rect(topleft = (0,0))
+
 
 broken_boat_surf = pygame.image.load("images/broken_boat.png").convert_alpha()
 broken_boat_surf = pygame.transform.scale(broken_boat_surf,(1200,675))
@@ -686,10 +678,9 @@ rudder_rect = pygame.Rect(330, 450, 100, 50)
 
 
 
-traveled_safly_surf = pacific_font.render('You Succsesfuly Traveled Through the Storm',True,(0,255,0))
+traveled_safly_surf = pacific_font.render('You Succsesfuly Traveled Throught the Storm',True,(0,255,0))
 traveled_safly_surf = pygame.transform.scale(traveled_safly_surf,(1100,100))
 traveled_safly_rect = traveled_safly_surf.get_rect(center = (600,100))
-
 
 
 not_traveled_safly_surf = pacific_font.render('You Perished While Trying to Travel Through the Storm',True,(255,0,0))
@@ -717,9 +708,6 @@ pygame.time.set_timer(damage_timer,200)
 
 second_timer = pygame.USEREVENT + 3
 pygame.time.set_timer(second_timer,1000)
-
-rain_anamation_timer = pygame.USEREVENT + 6
-pygame.time.set_timer(rain_anamation_timer,100)
  
 while True:
 
@@ -730,7 +718,7 @@ while True:
             pygame.quit() # oposite of pygame.init()
             exit()
         
-        if game_state == 3 or game_state == 5:
+        if game_state == 3:
             for plank in button_how:
                 mouse_pos = pygame.mouse.get_pos()
                 type_button_clicked = plank.check_click(mouse_pos,event)
@@ -743,15 +731,7 @@ while True:
         # if the game is in the main gameplay state
         if game_state == 1:
             
-            # rain animation
-            if event.type == rain_anamation_timer:
-                if rain_frame_index == 0:
-                    rain_frame_index = 1
-                else:
-                    rain_frame_index = 0
-                rain_surf = rain_frames[rain_frame_index]
-                rain_rect = rain_surf.get_rect(topleft = (0,0))
-                
+
             # Breakages spawning. Gets a random item from a list. adds it to the breakages sprite class, removes from current list and than put on another list. \
             # spawns at differant rates based on difficulty 
             if difficulty == 1:
@@ -829,8 +809,7 @@ while True:
                         ship_damage += 6
 
 
-                #debug mode
-                # ship_damage = 0
+
 
                 
 
@@ -938,9 +917,8 @@ while True:
     if game_state == 1:
         pygame.draw.rect(screen, (0,0,255), raised_deck)
         screen.blit(background_surf,(0,0))
-        
         screen.blit(boat_surf,boat_rect)
-        screen.blit(rain_surf,rain_rect)
+        
         #compass and wind
         if wind_strength <= 0:
             
@@ -990,7 +968,6 @@ while True:
             else:
                 outline = False
                 changing = False
-
         # sets the wind score weight based on the difficulty 
 
         if difficulty == 1:  
@@ -1002,7 +979,6 @@ while True:
                 wind_score_weight = 0.15
             else:
                 wind_score_weight = 0.07
-            
         
         elif difficulty == 2:
             if 20 > wind_strength > -20:
@@ -1013,7 +989,7 @@ while True:
                 wind_score_weight = 0.05
             else:
                 wind_score_weight = -0.03
-            
+
         elif difficulty == 3:
             if 20 > wind_strength > -20:
                 wind_score_weight = 0.2
@@ -1023,7 +999,7 @@ while True:
                 wind_score_weight = 0.05
             else:
                 wind_score_weight = -0.1
-
+        
         if press[pygame.K_x]or press[pygame.K_LSHIFT]:
             fixing = False
             changing = False
@@ -1054,7 +1030,7 @@ while True:
         screen.blit(ship_damage_meter_surf,ship_damage_meter_rect )
         if water_outline:
             pygame.draw.rect(screen, (0, 255, 0), ship_damage_meter_rect, 2)
-        
+
         
 
 
@@ -1185,8 +1161,8 @@ while True:
             breakage_type_eligible_list = ['sail', 'bow', 'floor_board', 'rope']
             breakage_type_ineligible_list = []
             game_state = 4
-            win = True
-            lose = False
+            win = False
+            lose = True
 
         if score >= 900:
             for b in breakage:
@@ -1210,7 +1186,6 @@ while True:
         time_score_surf_2 = pygame.transform.scale(time_score_surf_2,(400,60))
         time_score_rect_2 = time_score_surf_2.get_rect(center =(600, 85))
         screen.blit(time_score_surf_2,time_score_rect_2 )
-        
 
             
 
@@ -1257,7 +1232,6 @@ while True:
         pygame.draw.rect(screen,"#2C2C2CCC",(50,25,1100,625),10,2)
         button_how.draw(screen)
         screen.blit(how_to_play_surf,how_to_play_rect)
-        
 
     
     if game_state == 4:
@@ -1332,17 +1306,19 @@ while True:
     if game_state == 5:
         game_state_5_timer += 1
         screen.blit(background_surf, (0,0))
-        pygame.draw.rect(screen,"#673506FF",(350,210,490,350))
-        pygame.draw.rect(screen,"#2C2C2CCC",(350,210,490,350),10,2)
         difficulty_buttons.draw(screen)
         difficulty_buttons.update()
-        button_how.draw(screen)
         
         
     else:
         game_state_5_timer = 0 
+        
+       
+        
+
 
    
     pygame.display.update()
+
     # While loop can only run at FPS speed per second. 
     clock.tick(FPS)
