@@ -699,7 +699,7 @@ breakage_timer_m = pygame.USEREVENT + 4
 pygame.time.set_timer(breakage_timer_m,5000)
 
 breakage_timer_h = pygame.USEREVENT + 5
-pygame.time.set_timer(breakage_timer_h,4000)
+pygame.time.set_timer(breakage_timer_h,4500)
 
 damage_timer = pygame.USEREVENT + 2
 pygame.time.set_timer(damage_timer,200)
@@ -1213,26 +1213,22 @@ while True:
         game_state_4_timer += 1
         
         if lose:
-            # get the scroe and make the text
+            # get the score and make the text
             player_score_surf = pacific_font.render(f'Distance Traveled: { int(restart_screen_score*5)}m',True,(255,0,0))
             player_score_surf = pygame.transform.scale(player_score_surf,(400,60))
             player_score_rect = player_score_surf.get_rect(center = (600, 210))
 
+            # displays everything on the lose screen
             screen.blit(background_surf,(0,0))
             screen.blit(broken_boat_surf,broken_boat_rect)
             screen.blit(dead_player_surf, dead_player_rect)
-            # Draw a dark grey transparent overlay over the whole screen
             overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
-            # Only cover the text area with the overlay
             overlay.fill((0, 0, 0, 0))  # Fully transparent
             overlay_rect = pygame.Rect(50, 50, 1100, 200)
-            # Add padding to the overlay rectangle
             padding = -20
             padded_rect = overlay_rect.inflate(-padding * 2, -padding * 2)
             pygame.draw.rect(overlay, (30, 30, 40, 180), padded_rect)
             screen.blit(overlay, (0, 0))
-            # screen.blit(you_win_surf, you_win_rect)
-            # Draw a navy blue outline around the padded overlay area
             pygame.draw.rect(screen, (35, 41, 67), padded_rect,10)
 
             screen.blit(player_score_surf, player_score_rect)
@@ -1240,30 +1236,28 @@ while True:
         
         
         if win:
+            # gets the time and make the text
             time_score_surf = pacific_font.render(f'Time: {game_timer_score} Seconds',True,(0,255,0))
             time_score_surf = pygame.transform.scale(time_score_surf,(400,60))
             time_score_rect = time_score_surf.get_rect(center =(600, 210))
 
-            
+            # displays everything on the win screen
             screen.blit(background_surf, (0,0))
             screen.blit(win_island_surf, win_island_rect)
             screen.blit(dead_player_surf, alive_player_rect)
             screen.blit(boat_surf, win_boat_rect)
             
             
-            # Draw a dark grey transparent overlay over the whole screen
+           
             overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
             
-            # Only cover the text area with the overlay
-            overlay.fill((0, 0, 0, 0))  # Fully transparent
+            
+            overlay.fill((0, 0, 0, 0))
             overlay_rect = pygame.Rect(50, 50, 1100, 200)
-            # Add padding to the overlay rectangle
             padding = -20
             padded_rect = overlay_rect.inflate(-padding * 2, -padding * 2)
             pygame.draw.rect(overlay, (30, 30, 40, 180), padded_rect)
             screen.blit(overlay, (0, 0))
-            # screen.blit(you_win_surf, you_win_rect)
-            # Draw a navy blue outline around the padded overlay area
             pygame.draw.rect(screen, (35, 41, 67), padded_rect,10)
             
             screen.blit(traveled_safly_surf,traveled_safly_rect)
