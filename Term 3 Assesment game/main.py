@@ -67,7 +67,7 @@ class Player (pygame.sprite.Sprite):
 
 
     
-    # player left and right movement
+    # player left and right movement linked to  a and w, and, right arrow and left arrow. 
     def player_movement(self):
 
         # get keys pressed
