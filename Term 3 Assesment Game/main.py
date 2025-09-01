@@ -710,11 +710,7 @@ breakage_timer_m = pygame.USEREVENT + 4
 pygame.time.set_timer(breakage_timer_m,5000)
 
 breakage_timer_h = pygame.USEREVENT + 5
-<<<<<<< HEAD:Term 3 Assesment game/main.py
 pygame.time.set_timer(breakage_timer_h,4500)
-=======
-pygame.time.set_timer(breakage_timer_h,4000)
->>>>>>> origin/main:Term 3 Assesment Game/main.py
 
 damage_timer = pygame.USEREVENT + 2
 pygame.time.set_timer(damage_timer,200)
@@ -747,19 +743,6 @@ while True:
         # if the game is in the main gameplay state
         if game_state == 1:
             
-<<<<<<< HEAD:Term 3 Assesment game/main.py
-
-            # Breakages spawning. Gets a random item from a list. adds it to the breakages sprite class, removes from current list and than put on another list. \
-            # spawns at differant rates based on difficulty 
-            if difficulty == 1:
-                if event.type == breakage_timer_e:
-                    if breakage_type_eligible_list:
-                        removed_breakage = breakage_type_eligible_list[random.randint(0, len(breakage_type_eligible_list) - 1)]
-                        breakage.add(Breakage(removed_breakage))
-                        breakage_type_eligible_list.remove(removed_breakage)
-                        breakage_type_ineligible_list.append(removed_breakage) 
-
-=======
             # rain animation
             if event.type == rain_anamation_timer:
                 if rain_frame_index == 0:
@@ -779,7 +762,6 @@ while True:
                         breakage_type_eligible_list.remove(removed_breakage)
                         breakage_type_ineligible_list.append(removed_breakage) 
 
->>>>>>> origin/main:Term 3 Assesment Game/main.py
             elif difficulty == 2:
                 if event.type == breakage_timer_m:
                     if breakage_type_eligible_list:
@@ -847,12 +829,8 @@ while True:
                         ship_damage += 6
 
 
-<<<<<<< HEAD:Term 3 Assesment game/main.py
-
-=======
                 #debug mode
                 # ship_damage = 0
->>>>>>> origin/main:Term 3 Assesment Game/main.py
 
                 
 
@@ -1232,10 +1210,7 @@ while True:
         time_score_surf_2 = pygame.transform.scale(time_score_surf_2,(400,60))
         time_score_rect_2 = time_score_surf_2.get_rect(center =(600, 85))
         screen.blit(time_score_surf_2,time_score_rect_2 )
-<<<<<<< HEAD:Term 3 Assesment game/main.py
-=======
         
->>>>>>> origin/main:Term 3 Assesment Game/main.py
 
             
 
