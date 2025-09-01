@@ -168,7 +168,8 @@ class Main_buttons(pygame.sprite.Sprite):
     def __init__(self, type):
         super().__init__()
         self.object_type = type
-
+        
+        # sets the possition of the buttons based on there type. 
         self.image = pygame.image.load("images/Wooden_plank.png").convert_alpha()
         self.x_pos = 600
         if type == 'top':
@@ -193,6 +194,7 @@ class Main_buttons(pygame.sprite.Sprite):
     def check_click(self):
         global difficulty
         clicked = None
+        # if the collidpoint of the mouse is over the button and it clicks the game state changes based on the button
         if self.rect.collidepoint(pygame.mouse.get_pos()):
 
             if event.type == pygame.MOUSEBUTTONDOWN and game_state_2_timer > 15:
@@ -293,6 +295,8 @@ class Main_buttons(pygame.sprite.Sprite):
             game_state = 1
         
 
+        # make the rects of the buttons 
+        # displays the buttons onto the screen
         if self.object_type == 'top':
             self.main_start_rect = self.main_start_surf.get_rect(center = (600, self.y_pos))
             screen.blit(self.main_start_surf,self.main_start_rect)
@@ -323,6 +327,7 @@ class Game_over_buttons(pygame.sprite.Sprite):
         super().__init__()
         self.object_type = type
 
+        # sets the buttons image and possition and rect
         self.image = pygame.image.load("images/Wooden_plank.png").convert_alpha()
         self.x_pos = 600
         if type == 'top':
@@ -339,6 +344,8 @@ class Game_over_buttons(pygame.sprite.Sprite):
     def check_click(self):
         clicked = None
 
+        # checks collidepoint if the mouse 
+        # if button clicks then game_states changes accordly
         if self.rect.collidepoint(pygame.mouse.get_pos()) and game_state_4_timer > 15:
 
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -378,7 +385,7 @@ class Game_over_buttons(pygame.sprite.Sprite):
 
         self.check_hover()
 
-        
+        # changes the game states based on clickes 
         clicked = self.check_click()
         if clicked == 1:
             game_state = 1
@@ -387,7 +394,7 @@ class Game_over_buttons(pygame.sprite.Sprite):
             game_state = 2
             
         
-
+        # creates the rect of the text buttons and displays them.
         if self.object_type == 'top':
             restart_surf_rect = self.restart_game_over_surf.get_rect(center = (600, self.y_pos))
             screen.blit(self.restart_game_over_surf,restart_surf_rect)
@@ -403,7 +410,7 @@ class Button_how(pygame.sprite.Sprite):
         super().__init__()
         self.type = type
 
-  
+        # sets the buttons image and possition. 
         self.image = pygame.image.load("images/Wooden_plank.png").convert_alpha()
         
 
@@ -417,6 +424,7 @@ class Button_how(pygame.sprite.Sprite):
         # self.image = pygame.transform.scale(self.image,(360,65))
         self.rect = self.image.get_rect(center = (self.x_pos, self.y_pos))
 
+    # change the game_state based on which button is clicked by changing the clicked variable. 
     def check_click(self,mouse_pos,event):
         clicked = None
         if self.rect.collidepoint(mouse_pos):
@@ -497,7 +505,13 @@ lose = False
 
 ship_damage = 0
 
+fixing = False
+changing= False
+outline = False
+wind_score_weight = 0
 
+water_outline = False
+difficulty = 1
 
 
 
@@ -515,13 +529,7 @@ input_digit_3 = None
 
 breakage_colide_type = None
 wrong_text = 0
-fixing = False
-changing= False
-outline = False
-wind_score_weight = 0
 
-water_outline = False
-difficulty = 1
 # Groups
 
 #player group
@@ -619,7 +627,7 @@ background_surf = pygame.image.load("images/stormy_background(Medium).png").conv
 # sunny_background_surf = pygame.image.load('images/new_sunny_background(Custom).png')
 
 # play
-dead_player_surf = pygame.image.load("images/player_new.png").convert_alpha()
+dead_player_surf = pygame.image.load("images/player.png").convert_alpha()
 dead_player_surf = pygame.transform.scale(dead_player_surf, (50, 100))
 dead_player_rect = dead_player_surf.get_rect(midbottom = (1050,410))
 alive_player_rect = dead_player_surf.get_rect(midbottom = (925,610))
@@ -835,11 +843,11 @@ while True:
                 
 
 
+                # if the player is not moving and is on the bottom desk they can bail by pressing r or - on the num pad
+                # when the player presses r the ship damage decreases and it kicks the player out of fixing breakages and charging the direction of the ship. 
 
                 keys = pygame.key.get_pressed()
                 if (
-                    not fixing and
-                    not changing and
                     player.sprite.rect.y == 470 and
                     not keys[pygame.K_a] and
                     not keys[pygame.K_d] and
@@ -850,6 +858,9 @@ while True:
 
                         ship_damage -= 3
                         water_outline = True
+                        outline = False
+                        fixing = False
+                        changing = False
                         if ship_damage <= 0:
                             ship_damage = 0
                             water_outline = False
@@ -934,7 +945,7 @@ while True:
 
 
 
-    #main gameplay
+    #main gameplay for game
     if game_state == 1:
         pygame.draw.rect(screen, (0,0,255), raised_deck)
         screen.blit(background_surf,(0,0))
@@ -1174,7 +1185,7 @@ while True:
                     input_digit_3 = None
 
 
-        # end of game resets
+        # end of game resets all needed things
         if ship_damage >= 250:
             for b in breakage:
                 b.kill()
@@ -1182,11 +1193,13 @@ while True:
             wind_strength = 0 
             restart_screen_score = score
             score = 0
+            game_timer_score = game_timer
+            game_timer = 0 
             breakage_type_eligible_list = ['sail', 'bow', 'floor_board', 'rope']
             breakage_type_ineligible_list = []
             game_state = 4
-            win = True
-            lose = False
+            win = False
+            lose = True
 
         if score >= 900:
             for b in breakage:
