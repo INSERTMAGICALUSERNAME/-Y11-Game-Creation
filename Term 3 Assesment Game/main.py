@@ -1286,14 +1286,15 @@ while True:
             screen.blit(background_surf,(0,0))
             screen.blit(broken_boat_surf,broken_boat_rect)
             screen.blit(dead_player_surf, dead_player_rect)
-            overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
-            overlay.fill((0, 0, 0, 0))  # Fully transparent
-            overlay_rect = pygame.Rect(50, 50, 1100, 200)
-            padding = -20
-            padded_rect = overlay_rect.inflate(-padding * 2, -padding * 2)
-            pygame.draw.rect(overlay, (30, 30, 40, 180), padded_rect)
-            screen.blit(overlay, (0, 0))
-            pygame.draw.rect(screen, (35, 41, 67), padded_rect,10)
+            # overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+            # overlay.fill((0, 0, 0, 0))  # Fully transparent
+            # overlay_rect = pygame.Rect(50, 50, 1100, 200)
+            # padding = -20
+            # padded_rect = overlay_rect.inflate(-padding * 2, -padding * 2)
+            # pygame.draw.rect(overlay, (30, 30, 40, 180), padded_rect)
+            # screen.blit(overlay, (0, 0))
+            # pygame.draw.rect(screen, (35, 41, 67), padded_rect,10)
+            pygame.draw.rect(screen,(35, 41, 67),(30,50,1135,200))
 
             screen.blit(player_score_surf, player_score_rect)
             screen.blit(not_traveled_safly_surf,not_traveled_safly_rect)
@@ -1313,16 +1314,17 @@ while True:
             
             
            
-            overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+            # overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
             
             
-            overlay.fill((0, 0, 0, 0))
-            overlay_rect = pygame.Rect(50, 50, 1100, 200)
-            padding = -20
-            padded_rect = overlay_rect.inflate(-padding * 2, -padding * 2)
-            pygame.draw.rect(overlay, (30, 30, 40, 180), padded_rect)
-            screen.blit(overlay, (0, 0))
-            pygame.draw.rect(screen, (35, 41, 67), padded_rect,10)
+            # overlay.fill((0, 0, 0, 0))
+            # overlay_rect = pygame.Rect(50, 50, 1100, 200)
+            # padding = -20
+            # padded_rect = overlay_rect.inflate(-padding * 2, -padding * 2)
+            # pygame.draw.rect(overlay, (30, 30, 40, 180), padded_rect)
+            # screen.blit(overlay, (0, 0))
+            # pygame.draw.rect(screen, (35, 41, 67), padded_rect,10)
+            pygame.draw.rect(screen,(35, 41, 67),(30,50,1135,200))
             
             screen.blit(traveled_safly_surf,traveled_safly_rect)
             screen.blit(time_score_surf,time_score_rect)
@@ -1339,8 +1341,6 @@ while True:
     if game_state == 5:
         game_state_5_timer += 1
         screen.blit(background_surf, (0,0))
-        pygame.draw.rect(screen,"#673506FF",(350,210,490,350))
-        pygame.draw.rect(screen,"#2C2C2CCC",(350,210,490,350),10,2)
         difficulty_buttons.draw(screen)
         difficulty_buttons.update()
         button_how.draw(screen)
