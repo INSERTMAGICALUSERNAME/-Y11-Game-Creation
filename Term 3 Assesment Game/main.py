@@ -82,7 +82,7 @@ class Player (pygame.sprite.Sprite):
                 self.rect.x += 5
             # if the player is jumping they go faster
             else:
-                self.rect.x += 8
+                self.rect.x += 5
         # moving left
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             if self.rect.y == 470:
@@ -709,6 +709,10 @@ how_to_play_surf = pygame.image.load("images/how to play.png").convert_alpha()
 how_to_play_surf = pygame.transform.scale(how_to_play_surf,(1100,625))
 how_to_play_rect = how_to_play_surf.get_rect(center = (600, 337))
 
+back_text_surf = pacific_font.render('Back',True,("#342218"))
+back_text_surf = pygame.transform.scale(back_text_surf,(150,50))
+back_text_rect = back_text_surf.get_rect(center = (180,70))
+
 
 # clocks
 breakage_timer_e = pygame.USEREVENT + 1
@@ -1270,6 +1274,7 @@ while True:
         pygame.draw.rect(screen,"#2C2C2CCC",(50,25,1100,625),10,2)
         button_how.draw(screen)
         screen.blit(how_to_play_surf,how_to_play_rect)
+        screen.blit(back_text_surf, back_text_rect)
         
 
     
@@ -1339,11 +1344,16 @@ while True:
         game_state_4_timer = 0
 
     if game_state == 5:
+
+        
+        
+
         game_state_5_timer += 1
         screen.blit(background_surf, (0,0))
         difficulty_buttons.draw(screen)
         difficulty_buttons.update()
         button_how.draw(screen)
+        screen.blit(back_text_surf, back_text_rect)
         
         
     else:
