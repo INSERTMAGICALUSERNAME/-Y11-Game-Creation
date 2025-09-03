@@ -82,7 +82,7 @@ class Player (pygame.sprite.Sprite):
                 self.rect.x += 5
             # if the player is jumping they go faster
             else:
-                self.rect.x += 5
+                self.rect.x += 8
         # moving left
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             if self.rect.y == 470:
