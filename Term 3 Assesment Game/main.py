@@ -530,6 +530,23 @@ input_digit_3 = None
 breakage_colide_type = None
 wrong_text = 0
 
+# music and sound
+track_1 = pygame.mixer.Sound("music/calming-rain.mp3")
+track_2 = pygame.mixer.Sound("music/thunder-sound.mp3")
+
+
+channel_1 = pygame.mixer.Channel(0)
+channel_2 = pygame.mixer.Channel(1)
+
+# set volume of each track
+channel_1.set_volume(0.6)  
+channel_2.set_volume(0.4)
+
+# loops track indefinitely
+channel_1.play(track_1, loops=-1)
+channel_2.play(track_2, loops=-1)
+
+
 # Groups
 
 #player group
