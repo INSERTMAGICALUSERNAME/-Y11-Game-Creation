@@ -3,27 +3,66 @@
 # Date: 15/07/2025 
 # Version 1 
 
-# imports
+# imports all the librarys of code that we need for the game
 import pygame
 from sys import exit
 import random
 
-# player class
+# the player class, where all the compenents of the player can be condensed and called easily. 
 class Player (pygame.sprite.Sprite):
-    # inicailizes the class and sets thing like image, rect and gravity. 
+    # initializes the class and sets thing like image, rect and gravity. 
     def __init__(self):
         super().__init__()
+         
         
-        self.player_image_no_scale = pygame.image.load("images/player.png").convert_alpha()
-        self.player_image = pygame.transform.scale(self.player_image_no_scale, (50, 100))
+        # loads all the different frames for the player
+        self.player_frame_0 = pygame.image.load("images/player.png").convert_alpha()
+        self.player_frame_0 = pygame.transform.scale(self.player_frame_0, (50, 100))
 
-        self.image = self.player_image
-        self.rect =  self.player_image.get_rect(midbottom = (600,570))
+        self.player_frame_1 = pygame.image.load("images/player_frame_1.png").convert_alpha()
+        self.player_frame_1 = pygame.transform.scale(self.player_frame_1, (50, 100))
 
+        self.player_frame_2 = pygame.image.load("images/player_frame_2.png").convert_alpha()
+        self.player_frame_2 = pygame.transform.scale(self.player_frame_2, (50, 100))
 
+        self.player_frame_3 = pygame.image.load("images/player_frame_3.png").convert_alpha()
+        self.player_frame_3 = pygame.transform.scale(self.player_frame_3, (50, 100))
+
+        self.player_frame_4 = pygame.image.load("images/player_frame_4.png").convert_alpha()
+        self.player_frame_4 = pygame.transform.scale(self.player_frame_4, (100, 100))
+
+        self.player_frame_5 = pygame.image.load("images/player_frame_5.png").convert_alpha()
+        self.player_frame_5 = pygame.transform.scale(self.player_frame_5, (100, 100))
+
+        self.player_frame_6 = pygame.image.load("images/player_frame_6.png").convert_alpha()
+        self.player_frame_6 = pygame.transform.scale(self.player_frame_6, (100, 100))
+
+        self.player_frame_7 = pygame.image.load("images/player_frame_7.png").convert_alpha()
+        self.player_frame_7 = pygame.transform.scale(self.player_frame_7, (100, 100))
+
+        self.player_frame_8 = pygame.image.load("images/player_frame_8.png").convert_alpha()
+        self.player_frame_8 = pygame.transform.scale(self.player_frame_8, (100, 100))
+        
+        self.player_frame_9 = pygame.image.load("images/player_frame_9.png").convert_alpha()
+        self.player_frame_9 = pygame.transform.scale(self.player_frame_9, (100, 100))
+
+        self.player_frame_10 = pygame.image.load("images/player_frame_10.png").convert_alpha()
+        self.player_frame_10 = pygame.transform.scale(self.player_frame_10, (100, 100))
+
+        #setting up the variables required for animation
+        self.player_frames = [self.player_frame_0,self.player_frame_1,self.player_frame_2,self.player_frame_3,self.player_frame_4,self.player_frame_5,self.player_frame_6,self.player_frame_7,self.player_frame_8,self.player_frame_9,self.player_frame_10]
+        self.player_frame_index = 0
+
+        self.image = self.player_frames[self.player_frame_index]
+        self.rect =  self.image.get_rect(midbottom = (600,570))
+
+        #setting the player gravity to 0
         self.gravity = 0
+
     # player jump. and player collitions with sides of player area and raised deck
     def apply_gravity_and_jump(self):
+        global ship_damage
+        
 
         keys = pygame.key.get_pressed()
         
@@ -35,21 +74,26 @@ class Player (pygame.sprite.Sprite):
 
             if self.rect.colliderect(raised_deck):
                 self.gravity = 5
+                
         elif keys[pygame.K_SPACE] or keys[pygame.K_w] or keys[pygame.K_UP]:
             if self.rect.y >= 470:
                 self.gravity = -20
+                
             elif self.rect.colliderect(raised_deck):
                 if raised_deck.bottom > self.rect.bottom >= raised_deck.top:
                     self.gravity = -20
+                    
         else:
             if self.rect.colliderect(raised_deck):
                 if raised_deck.bottom > self.rect.bottom >= raised_deck.top:
                     self.rect.bottom = raised_deck.top
                     self.gravity = 0 
+                    
 
         if keys[pygame.KMOD_SHIFT]:
             if self.rect.colliderect(raised_deck):
                 self.gravity = -10
+                
   
         
         self.gravity += 1
@@ -57,13 +101,15 @@ class Player (pygame.sprite.Sprite):
 
         
         # makes the player stay in the play area 
-        if self.rect.y >= 470:
+        if self.rect.y >= 470 and not self.rect.left > 1050 and not self.rect.right < 30 :
             self.rect.y = 470
+            self.gravity = 0
 
-        if self.rect.left < 150:
-            self.rect.left = 150
-        if self.rect.right > 1030:
-            self.rect.right = 1030
+        
+        if (self.rect.right < 10 and self.rect.y >= 470) or (self.rect.left > 1150 and self.rect.y >= 470) or self.rect.y > 600:
+            ship_damage = 250
+
+            
 
 
     
@@ -77,23 +123,28 @@ class Player (pygame.sprite.Sprite):
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             if self.rect.y == 470:
                 self.rect.x += 5
+                
             elif self.rect.colliderect(raised_deck):
-
+                
                 self.rect.x += 5
             # if the player is jumping they go faster
             else:
                 self.rect.x += 8
+            self.player_frame_index = 0
+                
         # moving left
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             if self.rect.y == 470:
-
+                
                 self.rect.x -= 5
             elif self.rect.colliderect(raised_deck):
-
+                
                 self.rect.x -= 5
             # if the player is jumping they go faster
             else:
                 self.rect.x -= 8
+            self.player_frame_index = 0
+        
     
    
 
@@ -106,9 +157,15 @@ class Player (pygame.sprite.Sprite):
         self.apply_gravity_and_jump()
         self.player_movement()
         global player_x_pos
+        global fixing
         player_x_pos = self.rect.x
+        self.image = self.player_frames[self.player_frame_index]
+        
+        
+            
         if game_state == 4:
             self.rect.midbottom = (600, 570)
+            
 
         
 
@@ -485,22 +542,17 @@ game_state_4_timer = 0
 game_state_5_timer = 0 
 
 game_state = 2 # 1 = main gameplay, 2 = title screen, 3 = how to play screen, 4 = game over screen 5 = difficulty selection Screen. 
-
+keys = None
 
 score = 0
 restart_screen_score = 0
 game_timer = 0 
 game_timer_score = 0
 
-win = True
-lose = False
+win = False
+lose = True
 
 ship_damage = 0
-
-
-
-
-
 
 # set up passcode variables
 passcode = []
@@ -558,7 +610,6 @@ game_over_button.add(Game_over_buttons(bottom))
 
 # breakage group
 breakage = pygame.sprite.Group()
-
 button_how = pygame.sprite.Group()
 button_how.add(Button_how('top_left'))
 
@@ -619,7 +670,7 @@ background_surf = pygame.image.load("images/stormy_background(Medium).png").conv
 # sunny_background_surf = pygame.image.load('images/new_sunny_background(Custom).png')
 
 # play
-dead_player_surf = pygame.image.load("images/player_new.png").convert_alpha()
+dead_player_surf = pygame.image.load("images/player.png").convert_alpha()
 dead_player_surf = pygame.transform.scale(dead_player_surf, (50, 100))
 dead_player_rect = dead_player_surf.get_rect(midbottom = (1050,410))
 alive_player_rect = dead_player_surf.get_rect(midbottom = (925,610))
@@ -743,7 +794,7 @@ while True:
         # if the game is in the main gameplay state
         if game_state == 1:
             
-            # rain animation
+            # rain animation cycling through the rain frames
             if event.type == rain_anamation_timer:
                 if rain_frame_index == 0:
                     rain_frame_index = 1
@@ -885,6 +936,20 @@ while True:
                         if event.unicode.isdigit():
                             digit = int(event.unicode)
                             
+
+                            
+
+                            
+                            #animating the player depending on what key is pressed
+                            if 1 <= digit <= 9:
+                                player.sprite.player_frame_index = digit
+                                
+                            elif digit == 0:
+                                player.sprite.player_frame_index = 10
+                                
+                            
+                            
+
                             if input_digit_1 == pass_digit_1 and input_digit_2 == pass_digit_2:
                                 input_digit_3 = digit
                                 if input_digit_3 != pass_digit_3:
@@ -916,6 +981,7 @@ while True:
                         input_digit_1 = None
                         input_digit_2 = None
                         input_digit_3 = None
+                        
                             
                             
                         
@@ -991,38 +1057,38 @@ while True:
                 outline = False
                 changing = False
 
-        # sets the wind score weight based on the difficulty 
+        # sets the wind score weight based on the difficulty and directon the ship is facing. 
 
         if difficulty == 1:  
-            if 20 > wind_strength > -20:
+            if 20 > wind_strength > -20: #inside the green zone
                 wind_score_weight = 0.25
-            elif 60 > wind_strength > -60:
+            elif 60 > wind_strength > -60:#inside the yellow zone
                 wind_score_weight = 0.2
-            elif 100 > wind_strength > -100:
+            elif 100 > wind_strength > -100:#inside the orange zone
                 wind_score_weight = 0.15
             else:
-                wind_score_weight = 0.07
+                wind_score_weight = 0.07#inside the red zone
             
         
         elif difficulty == 2:
-            if 20 > wind_strength > -20:
+            if 20 > wind_strength > -20:#inside the green zone
                 wind_score_weight = 0.2
-            elif 60 > wind_strength > -60:
+            elif 60 > wind_strength > -60:#inside the yellow zone
                 wind_score_weight = 0.1
-            elif 100 > wind_strength > -100:
+            elif 100 > wind_strength > -100:#inside the orange zone
                 wind_score_weight = 0.05
             else:
-                wind_score_weight = -0.03
+                wind_score_weight = -0.03#inside the red zone
             
         elif difficulty == 3:
-            if 20 > wind_strength > -20:
+            if 20 > wind_strength > -20:#inside the green zone
                 wind_score_weight = 0.2
-            elif 60 > wind_strength > -60:
+            elif 60 > wind_strength > -60:#inside the yellow zone
                 wind_score_weight = 0.075
-            elif 100 > wind_strength > -100:
+            elif 100 > wind_strength > -100:#inside the orange zone
                 wind_score_weight = 0.05
             else:
-                wind_score_weight = -0.1
+                wind_score_weight = -0.1#inside the red zone
 
         if press[pygame.K_x]or press[pygame.K_LSHIFT]:
             fixing = False
@@ -1185,8 +1251,8 @@ while True:
             breakage_type_eligible_list = ['sail', 'bow', 'floor_board', 'rope']
             breakage_type_ineligible_list = []
             game_state = 4
-            win = True
-            lose = False
+            win = False
+            lose = True
 
         if score >= 900:
             for b in breakage:
