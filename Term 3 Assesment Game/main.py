@@ -62,6 +62,7 @@ class Player (pygame.sprite.Sprite):
     # player jump. and player collitions with sides of player area and raised deck
     def apply_gravity_and_jump(self):
         global ship_damage
+        global lose
         
 
         keys = pygame.key.get_pressed()
@@ -99,17 +100,16 @@ class Player (pygame.sprite.Sprite):
         self.gravity += 1
         self.rect.y += self.gravity
 
-        
+       
         # makes the player stay in the play area 
-        if self.rect.y >= 470 and not self.rect.left > 1050 and not self.rect.right < 30 :
+        if self.rect.y >= 470 and not self.rect.right > 1180 and not self.rect.right < 60 :
             self.rect.y = 470
             self.gravity = 0
 
         #if the player jumps of the ship they will lose instantly
-        if (self.rect.right < 10 and self.rect.y >= 470) or (self.rect.left > 1150 and self.rect.y >= 470) or self.rect.y > 600:
-            ship_damage = 250
+        if self.rect.y > 600:
+            ship_damage += 250
 
-            
 
 
     
@@ -808,7 +808,7 @@ rain_anamation_timer = pygame.USEREVENT + 6
 pygame.time.set_timer(rain_anamation_timer,100)
  
 while True:
-
+    
     
     for event in pygame.event.get():
         # Closes the game if you click close
@@ -1282,14 +1282,16 @@ while True:
         if ship_damage >= 250:
             for b in breakage:
                 b.kill()
+            restart_screen_score = score
             ship_damage = 0 
             wind_strength = 0 
-            restart_screen_score = score
+            
             score = 0
             game_timer_score = game_timer
             game_timer = 0 
             breakage_type_eligible_list = ['sail', 'bow', 'floor_board', 'rope']
             breakage_type_ineligible_list = []
+            player.sprite.rect.midbottom = (600, 570)
             game_state = 4
             win = False
             lose = True
@@ -1306,10 +1308,13 @@ while True:
             breakage_type_eligible_list = ['sail', 'bow', 'floor_board', 'rope']
             breakage_type_ineligible_list = []
 
+
+            player.sprite.rect.midbottom = (600, 570)
             game_state = 4
 
             win = True
             lose = False
+
 
         # telling the player how long they lived for
         time_score_surf_2 = pacific_font.render(f'Time: {game_timer} Seconds',True,(0,255,0))
@@ -1396,8 +1401,6 @@ while True:
             screen.blit(win_island_surf, win_island_rect)
             screen.blit(dead_player_surf, alive_player_rect)
             screen.blit(boat_surf, win_boat_rect)
-            
-            
             pygame.draw.rect(screen,(35, 41, 67),(30,50,1135,200))
             
             screen.blit(traveled_safly_surf,traveled_safly_rect)
